@@ -1,0 +1,3151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FLOREO — Gestion locative</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BF%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --bg:           #0a0a0f;
+    --bg-side:      #0d0d14;
+    --surface:      #111118;
+    --surface-2:    #16161f;
+    --surface-3:    #1e1e2e;
+    --border:       rgba(255,255,255,0.06);
+    --border-soft:  rgba(255,255,255,0.04);
+    --border-hi:    rgba(255,255,255,0.10);
+    --hover:        rgba(255,255,255,0.03);
+
+    --primary:      #6366f1;
+    --primary-2:    #8b5cf6;
+    --primary-glow: rgba(99,102,241,0.30);
+    --primary-soft: rgba(99,102,241,0.15);
+
+    --success:      #10b981;
+    --success-soft: rgba(16,185,129,0.12);
+    --warning:      #f59e0b;
+    --warning-soft: rgba(245,158,11,0.12);
+    --danger:       #ef4444;
+    --danger-soft:  rgba(239,68,68,0.12);
+
+    --text:         #f1f5f9;
+    --text-2:       #94a3b8;
+    --text-3:       #64748b;
+    --text-4:       #475569;
+
+    --grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --grad-v: linear-gradient(180deg, rgba(99,102,241,0.85) 0%, rgba(139,92,246,0.10) 100%);
+
+    --shadow-1: 0 1px 0 rgba(255,255,255,0.04) inset;
+    --shadow-card: 0 1px 0 rgba(255,255,255,0.05) inset, 0 0 0 1px var(--border);
+    --shadow-primary: 0 4px 15px rgba(99,102,241,0.30), 0 1px 0 rgba(255,255,255,0.15) inset;
+
+    --r-sm: 8px;
+    --r-md: 10px;
+    --r-lg: 14px;
+    --r-xl: 16px;
+    --r-2xl: 20px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+  ::selection { background: var(--primary-soft); color: var(--text); }
+  a { color: inherit; text-decoration: none; }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-thumb:hover { background: #2a2a3e; }
+
+  /* ─────────────── BUTTONS ─────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    transition: all 0.18s ease;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--surface-2); border-color: var(--border-hi); }
+  .btn svg { width: 14px; height: 14px; stroke-width: 1.9; }
+  .btn-ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+  .btn-ghost:hover { background: var(--hover); color: var(--text); border-color: transparent; }
+  .btn-primary {
+    background: var(--grad);
+    border: none;
+    color: #fff;
+    box-shadow: var(--shadow-primary);
+    padding: 9px 15px;
+  }
+  .btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+  .btn-lg { padding: 13px 22px; font-size: 14px; border-radius: 12px; }
+  .btn-icon { padding: 8px; }
+  .btn-block { width: 100%; }
+
+  /* ─────────────── BRAND MARK ─────────────── */
+  .brand-mark {
+    width: 30px; height: 30px;
+    background: var(--grad);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.35), 0 1px 0 rgba(255,255,255,0.2) inset;
+    color: #fff;
+    flex: none;
+  }
+  .brand-mark svg { width: 16px; height: 16px; stroke-width: 2.4; }
+  .brand-mark.lg { width: 44px; height: 44px; border-radius: 12px; }
+  .brand-mark.lg svg { width: 22px; height: 22px; }
+  .brand-name { font-weight: 600; font-size: 15px; letter-spacing: -0.02em; }
+  .brand-name span { color: var(--text-3); font-weight: 500; }
+
+  /* ─────────────── FLOREO LOGO ─────────────── */
+  .floreo-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    --mark-h: 32px;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    color: inherit;
+  }
+  .floreo-logo.sm { --mark-h: 26px; gap: 8px; }
+  .floreo-logo.lg { --mark-h: 40px; }
+  .floreo-logo.v {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    --mark-h: 56px;
+  }
+  .floreo-mark {
+    height: var(--mark-h);
+    width: calc(var(--mark-h) * 0.62);
+    transform: rotate(15deg);
+    flex: none;
+    display: block;
+    filter: drop-shadow(0 2px 10px rgba(99,102,241,0.30));
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .floreo-logo:hover .floreo-mark { transform: rotate(15deg) scale(1.06); }
+  .floreo-word {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    font-size: calc(var(--mark-h) * 0.68);
+    line-height: 1;
+    text-transform: lowercase;
+  }
+  .floreo-word .f { color: #6366f1; }
+  .floreo-logo.v .floreo-word { font-size: 22px; letter-spacing: 0.05em; }
+
+  /* ─────────────── JetBrains Mono on numerics ─────────────── */
+  .num,
+  .stat-value,
+  .ring-center .pct,
+  .rent-info h2,
+  .gauge-stats .big,
+  .kpi .val,
+  .kpi-flat .val,
+  .plan .amount,
+  .prop-foot .rent .v,
+  .event-date .d,
+  .info-row .v.mono,
+  .table .num,
+  .mockup-tile .value {
+    font-family: 'JetBrains Mono', 'Inter', monospace;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  /* ─────────────── Emerald halo on positive KPIs ─────────────── */
+  .kpi.is-emerald, .kpi-flat.is-emerald {
+    box-shadow: var(--shadow-1), 0 4px 24px rgba(16,185,129,0.10);
+    border-color: rgba(16,185,129,0.16);
+  }
+  .kpi.is-emerald .icon, .kpi-flat.is-emerald::before {
+    /* leave icon styling intact; halo is via shadow only */
+  }
+
+  /* ─────────────── Auth tabs ─────────────── */
+  .auth-tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-hi);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 22px;
+  }
+  .auth-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-3);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: -0.005em;
+  }
+  .auth-tab:hover { color: var(--text-2); }
+  .auth-tab.active {
+    background: rgba(99,102,241,0.15);
+    color: var(--text);
+    box-shadow: inset 0 -2px 0 #6366f1, inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* Topbar breadcrumb */
+  .topbar-crumb {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    letter-spacing: -0.005em;
+  }
+
+  /* ─────────────── BADGES ─────────────── */
+  .badge-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .badge-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .badge-success { background: var(--success-soft); color: var(--success); }
+  .badge-warning { background: var(--warning-soft); color: var(--warning); }
+  .badge-danger  { background: var(--danger-soft);  color: var(--danger); }
+  .badge-info    { background: var(--primary-soft); color: var(--primary-2); }
+  .badge-neutral { background: rgba(255,255,255,0.05); color: var(--text-2); }
+
+  /* ─────────────── CARDS ─────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 22px;
+    box-shadow: var(--shadow-1);
+    position: relative;
+  }
+  .card-glass {
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .card-h {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+    font-weight: 600;
+  }
+  .card-link {
+    font-size: 12px;
+    color: var(--text-2);
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: color 0.18s ease;
+    cursor: pointer;
+  }
+  .card-link:hover { color: var(--text); }
+  .card-link svg { width: 12px; height: 12px; }
+
+  /* ─────────────── VIEW ROUTER ─────────────── */
+  .view { display: none; animation: fade .35s ease; }
+  .view.active { display: block; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ════════════════════════════════════════════════
+     LANDING
+     ════════════════════════════════════════════════ */
+  .landing-bg {
+    min-height: 100vh;
+    background:
+      radial-gradient(900px 600px at 80% -10%, rgba(139,92,246,0.18) 0%, transparent 60%),
+      radial-gradient(700px 500px at 10% 10%, rgba(99,102,241,0.12) 0%, transparent 55%),
+      var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+  .landing-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+    pointer-events: none;
+  }
+  .land-wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; }
+
+  .land-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0;
+  }
+  .land-nav .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .land-nav .nav-links { display: flex; gap: 28px; }
+  .land-nav .nav-links a {
+    color: var(--text-2); font-size: 13.5px; font-weight: 500;
+    transition: color 0.18s ease;
+  }
+  .land-nav .nav-links a:hover { color: var(--text); }
+  .land-nav .actions { display: flex; gap: 10px; align-items: center; }
+
+  .hero {
+    text-align: center;
+    padding: 80px 0 100px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 6px;
+    background: rgba(99,102,241,0.10);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 999px;
+    font-size: 12.5px;
+    color: var(--text-2);
+    margin-bottom: 24px;
+  }
+  .hero-eyebrow .tag {
+    background: var(--grad);
+    color: #fff;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 5.5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-weight: 700;
+    margin: 0 0 22px;
+    max-width: 900px;
+    margin-left: auto; margin-right: auto;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, #a78bfa 0%, #818cf8 50%, #f1f5f9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .lead {
+    font-size: 18px;
+    color: var(--text-2);
+    max-width: 620px;
+    margin: 0 auto 36px;
+    line-height: 1.55;
+  }
+  .hero-cta {
+    display: inline-flex; gap: 12px; align-items: center;
+    margin-bottom: 70px;
+  }
+  .hero-cta .btn-lg { font-size: 15px; padding: 14px 24px; }
+
+  /* App preview mockup */
+  .hero-mockup {
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    border-radius: 18px;
+    background: linear-gradient(180deg, var(--surface) 0%, #0d0d14 100%);
+    border: 1px solid var(--border-hi);
+    overflow: hidden;
+    box-shadow:
+      0 50px 100px -30px rgba(99,102,241,0.45),
+      0 30px 60px -20px rgba(0,0,0,0.6),
+      0 1px 0 rgba(255,255,255,0.08) inset;
+  }
+  .hero-mockup::before {
+    content: '';
+    position: absolute;
+    top: -50px; left: -50px; right: -50px;
+    height: 100px;
+    background: radial-gradient(50% 100% at 50% 100%, rgba(139,92,246,0.55) 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(20px);
+  }
+  .mockup-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+  .mockup-bar .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
+  .mockup-bar .dot.r { background: #ef4444aa; }
+  .mockup-bar .dot.y { background: #f59e0baa; }
+  .mockup-bar .dot.g { background: #10b981aa; }
+  .mockup-bar .url {
+    margin-left: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-3);
+  }
+  .mockup-body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    height: 460px;
+  }
+  .mockup-side {
+    background: var(--bg-side);
+    border-right: 1px solid var(--border);
+    padding: 16px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .mockup-side-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .mockup-side-item.act { background: var(--primary-soft); color: var(--text); }
+  .mockup-side-item.act .ph { background: var(--primary-2); }
+  .mockup-side-item .ph { width: 12px; height: 12px; border-radius: 3px; background: var(--surface-3); }
+  .mockup-side-item .bar { flex: 1; height: 6px; border-radius: 4px; background: currentColor; opacity: 0.4; }
+  .mockup-main {
+    padding: 22px;
+    display: flex; flex-direction: column; gap: 14px;
+    overflow: hidden;
+  }
+  .mockup-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px; }
+  .mockup-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .mockup-tile .label { width: 60px; height: 6px; background: var(--surface-3); border-radius: 4px; }
+  .mockup-tile .value { font-size: 20px; font-weight: 600; color: #fff; letter-spacing: -0.02em; }
+  .mockup-tile.big { background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08)); border-color: rgba(99,102,241,0.25); }
+  .mockup-chart {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    flex: 1;
+    display: flex; align-items: flex-end; gap: 10px;
+    min-height: 0;
+  }
+  .mockup-chart .bar {
+    flex: 1;
+    background: var(--grad-v);
+    border-radius: 4px 4px 0 0;
+  }
+
+  /* Sections */
+  .sect { padding: 90px 0; position: relative; }
+  .sect-h { text-align: center; margin-bottom: 56px; }
+  .sect-h .eyebrow {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--primary-2); font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .sect-h h2 {
+    font-size: clamp(32px, 4vw, 44px);
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    margin: 0 0 14px;
+    line-height: 1.1;
+  }
+  .sect-h p { color: var(--text-2); font-size: 16px; max-width: 580px; margin: 0 auto; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .feature {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 26px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  }
+  .feature:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+  .feature .ico {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    display: grid; place-items: center;
+    margin-bottom: 18px;
+  }
+  .feature .ico svg { width: 20px; height: 20px; stroke-width: 1.8; }
+  .feature h3 { margin: 0 0 8px; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+  .feature p { margin: 0; color: var(--text-2); font-size: 13.5px; line-height: 1.55; }
+
+  /* Pricing */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .plan {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 32px 26px;
+    display: flex; flex-direction: column;
+    position: relative;
+    transition: all 0.25s ease;
+  }
+  .plan.featured {
+    background:
+      radial-gradient(80% 50% at 50% 0%, rgba(139,92,246,0.18) 0%, transparent 65%),
+      var(--surface);
+    border-color: rgba(139,92,246,0.45);
+    box-shadow: 0 20px 60px -20px rgba(139,92,246,0.35);
+    transform: scale(1.02);
+  }
+  .plan .featured-tag {
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    background: var(--grad);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(139,92,246,0.4);
+  }
+  .plan h3 { margin: 0 0 6px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .plan .tagline { color: var(--text-3); font-size: 12.5px; margin-bottom: 22px; }
+  .plan .price {
+    display: flex; align-items: baseline; gap: 6px;
+    margin-bottom: 22px;
+  }
+  .plan .amount { font-size: 42px; font-weight: 700; letter-spacing: -0.03em; color: #fff; font-feature-settings: 'tnum' 1; }
+  .plan .per { color: var(--text-3); font-size: 13px; }
+  .plan ul { list-style: none; padding: 0; margin: 0 0 26px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .plan li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text-2); }
+  .plan li svg { width: 16px; height: 16px; color: var(--success); flex: none; margin-top: 1px; stroke-width: 2.2; }
+  .plan li.dim { color: var(--text-4); }
+  .plan li.dim svg { color: var(--text-4); }
+
+  .land-footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--text-3); font-size: 12.5px;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .land-footer .links { display: flex; gap: 20px; }
+  .land-footer .links a:hover { color: var(--text-2); }
+
+  /* ════════════════════════════════════════════════
+     AUTH
+     ════════════════════════════════════════════════ */
+  .auth-bg {
+    min-height: 100vh;
+    background:
+      radial-gradient(700px 500px at 80% 100%, rgba(139,92,246,0.22) 0%, transparent 60%),
+      radial-gradient(600px 400px at 20% 0%, rgba(99,102,241,0.15) 0%, transparent 55%),
+      var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .auth-back {
+    position: absolute; top: 24px; left: 28px;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--text-2); font-size: 13px; cursor: pointer;
+    transition: color 0.18s ease;
+  }
+  .auth-back:hover { color: var(--text); }
+  .auth-card {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(17,17,24,0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 22px;
+    padding: 36px;
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.5),
+      0 1px 0 rgba(255,255,255,0.06) inset;
+    position: relative;
+  }
+  .auth-head {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    margin-bottom: 26px;
+  }
+  .auth-head .brand-mark.lg { margin-bottom: 16px; }
+  .auth-head h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .auth-head p { margin: 0; color: var(--text-3); font-size: 13.5px; }
+
+  .form { display: flex; flex-direction: column; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field label {
+    font-size: 11.5px;
+    color: var(--text-2);
+    font-weight: 500;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .field label .hint { color: var(--text-3); font-weight: 400; cursor: pointer; }
+  .field label .hint:hover { color: var(--primary-2); }
+  .input {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-hi);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13.5px;
+    padding: 10px 12px;
+    border-radius: var(--r-md);
+    transition: all 0.18s ease;
+    outline: none;
+  }
+  .input::placeholder { color: var(--text-4); }
+  .input:focus {
+    border-color: rgba(99,102,241,0.55);
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  }
+  .input.error { border-color: rgba(239,68,68,0.55); box-shadow: 0 0 0 3px rgba(239,68,68,0.10); }
+  .field-error {
+    font-size: 11.5px; color: var(--danger);
+    display: flex; align-items: center; gap: 5px;
+    margin-top: 2px;
+  }
+  .field-error svg { width: 12px; height: 12px; }
+  .check {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 12.5px; color: var(--text-2);
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.45;
+  }
+  .check input { display: none; }
+  .check .box {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border-hi);
+    background: rgba(255,255,255,0.03);
+    flex: none;
+    display: grid; place-items: center;
+    transition: all 0.15s ease;
+    margin-top: 1px;
+  }
+  .check .box svg { width: 11px; height: 11px; color: #fff; opacity: 0; stroke-width: 3; }
+  .check input:checked + .box { background: var(--grad); border-color: transparent; }
+  .check input:checked + .box svg { opacity: 1; }
+  .check a { color: var(--primary-2); text-decoration: underline; text-decoration-color: rgba(139,92,246,0.4); text-underline-offset: 2px; }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--text-4); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin: 8px 0;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+  }
+
+  .auth-foot {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .auth-foot a {
+    color: var(--primary-2);
+    font-weight: 500;
+    margin-left: 4px;
+    cursor: pointer;
+  }
+  .auth-foot a:hover { text-decoration: underline; }
+
+  /* ════════════════════════════════════════════════
+     SELECTOR
+     ════════════════════════════════════════════════ */
+  .sel-bg {
+    min-height: 100vh;
+    background:
+      radial-gradient(800px 500px at 80% -10%, rgba(99,102,241,0.10) 0%, transparent 60%),
+      var(--bg);
+  }
+  .top-bar {
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(10,10,15,0.7);
+    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 20;
+  }
+  .top-bar .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .user-menu {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 8px 4px 4px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    position: relative;
+  }
+  .user-menu:hover { border-color: var(--border-hi); }
+  .user-menu .avatar { width: 28px; height: 28px; font-size: 11px; }
+  .user-menu .uname { font-size: 13px; font-weight: 500; color: var(--text); }
+  .user-menu .chev { color: var(--text-3); width: 14px; height: 14px; }
+  .user-menu .dropdown {
+    position: absolute;
+    top: calc(100% + 6px); right: 0;
+    width: 220px;
+    background: var(--surface);
+    border: 1px solid var(--border-hi);
+    border-radius: var(--r-lg);
+    padding: 6px;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: all 0.18s ease;
+  }
+  .user-menu.open .dropdown { opacity: 1; visibility: visible; transform: none; }
+  .dropdown-head { padding: 12px 12px 10px; border-bottom: 1px solid var(--border-soft); margin-bottom: 4px; }
+  .dropdown-head .nm { font-size: 13px; font-weight: 500; }
+  .dropdown-head .em { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .dropdown-item:hover { background: var(--hover); color: var(--text); }
+  .dropdown-item svg { width: 14px; height: 14px; stroke-width: 1.8; }
+  .dropdown-item.danger { color: var(--danger); }
+  .dropdown-item.danger:hover { background: rgba(239,68,68,0.08); }
+
+  .sel-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+  .sel-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 32px; gap: 24px;
+  }
+  .sel-head .ti h1 {
+    margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.03em;
+  }
+  .sel-head .ti p { margin: 6px 0 0; color: var(--text-2); font-size: 14px; }
+
+  .prop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .prop-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .prop-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-hi);
+    box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+  }
+  .prop-thumb {
+    height: 140px;
+    background:
+      linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.10) 100%),
+      var(--surface-2);
+    position: relative;
+    display: grid; place-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .prop-thumb::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+  .prop-thumb .glyph {
+    width: 60px; height: 60px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.12);
+    display: grid; place-items: center;
+    color: var(--text);
+    position: relative;
+    z-index: 1;
+  }
+  .prop-thumb .glyph svg { width: 28px; height: 28px; stroke-width: 1.8; }
+  .prop-thumb .health {
+    position: absolute; top: 14px; right: 14px;
+    z-index: 2;
+  }
+  .prop-body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .prop-body .addr {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-3); font-weight: 600;
+  }
+  .prop-body h3 { margin: 4px 0 2px; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  .prop-body .city { color: var(--text-2); font-size: 13.5px; }
+  .prop-meta {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .prop-meta .it {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12.5px; color: var(--text-2);
+  }
+  .prop-meta .it svg { width: 13px; height: 13px; color: var(--text-3); stroke-width: 1.8; }
+  .prop-meta .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-4); }
+  .prop-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .prop-foot .rent {
+    display: flex; flex-direction: column;
+  }
+  .prop-foot .rent .v { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: -0.02em; font-feature-settings: 'tnum' 1; }
+  .prop-foot .rent .l { font-size: 11px; color: var(--text-3); }
+
+  .prop-card-add {
+    background: transparent;
+    border: 2px dashed var(--border-hi);
+    border-radius: var(--r-2xl);
+    min-height: 320px;
+    display: grid; place-items: center;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    color: var(--text-3);
+  }
+  .prop-card-add:hover {
+    border-color: rgba(139,92,246,0.45);
+    background: rgba(139,92,246,0.04);
+    color: var(--text);
+  }
+  .prop-card-add .ico {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border-hi);
+    display: grid; place-items: center;
+    margin: 0 auto 14px;
+    transition: all 0.18s ease;
+  }
+  .prop-card-add .ico svg { width: 22px; height: 22px; stroke-width: 1.8; }
+  .prop-card-add:hover .ico { background: var(--primary-soft); border-color: rgba(139,92,246,0.45); color: var(--primary-2); }
+  .prop-card-add .inner { text-align: center; }
+  .prop-card-add .inner h4 { margin: 0 0 4px; font-size: 14px; font-weight: 500; color: inherit; }
+  .prop-card-add .inner p { margin: 0; font-size: 12.5px; }
+
+  /* ════════════════════════════════════════════════
+     APP SHELL
+     ════════════════════════════════════════════════ */
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+  .sidebar {
+    background: var(--bg-side);
+    padding: 18px 16px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.06) 18%, rgba(255,255,255,0.06) 82%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
+  }
+  .sidebar .brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 10px 16px;
+    cursor: pointer;
+  }
+  .back-link {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    margin: 0 0 14px;
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .back-link:hover { background: var(--surface-2); color: var(--text); border-color: var(--border-hi); }
+  .back-link svg { width: 13px; height: 13px; }
+  .back-link .nm { font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .nav-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-4);
+    padding: 14px 12px 6px;
+    font-weight: 600;
+  }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--r-md);
+    color: var(--text-2);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.18s ease;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .nav-item svg { width: 16px; height: 16px; stroke-width: 1.8; color: var(--text-3); transition: color 0.18s ease; }
+  .nav-item:hover { background: var(--hover); color: var(--text); }
+  .nav-item:hover svg { color: var(--text-2); }
+  .nav-item.active { background: var(--primary-soft); color: var(--text); }
+  .nav-item.active svg { color: var(--primary-2); }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -16px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: var(--grad);
+    border-radius: 0 2px 2px 0;
+  }
+  .nav-item .badge {
+    margin-left: auto;
+    font-size: 10px;
+    background: var(--surface-3);
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+  .sidebar-foot { margin-top: auto; padding-top: 14px; }
+  .property-card-mini {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .property-thumb-mini {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.20), rgba(139,92,246,0.10));
+    display: grid; place-items: center;
+    color: var(--primary-2);
+    flex: none;
+  }
+  .property-thumb-mini svg { width: 15px; height: 15px; stroke-width: 1.8; }
+  .property-info-mini { min-width: 0; flex: 1; }
+  .property-info-mini .t1 { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .property-info-mini .t2 { font-size: 10.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .property-info-mini .dot-online {
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success);
+    margin-right: 4px;
+    vertical-align: middle;
+    box-shadow: 0 0 6px rgba(16,185,129,0.6);
+  }
+
+  /* Main */
+  .main {
+    padding: 28px 40px 60px;
+    width: 100%;
+    min-width: 0;
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px;
+    margin-bottom: 16px;
+    color: var(--text-3);
+  }
+  .breadcrumb a { color: var(--text-2); cursor: pointer; transition: color 0.15s ease; }
+  .breadcrumb a:hover { color: var(--text); }
+  .breadcrumb svg { width: 11px; height: 11px; color: var(--text-4); }
+  .breadcrumb .cur { color: var(--text); font-weight: 500; }
+
+  .page-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .page-title-block .crumb {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .page-title-block h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  .page-title-block .sub {
+    margin-top: 6px;
+    color: var(--text-2);
+    font-size: 13.5px;
+  }
+  .page-actions { display: flex; align-items: center; gap: 10px; }
+
+  /* page within app */
+  .page { display: none; animation: fade .25s ease; }
+  .page.active { display: block; }
+
+  /* Stat helpers */
+  .stat-value {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    font-feature-settings: 'tnum' 1;
+  }
+  .stat-delta {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 500;
+    padding: 3px 7px; border-radius: 6px;
+    background: var(--success-soft); color: var(--success);
+  }
+  .stat-delta svg { width: 11px; height: 11px; }
+  .stat-delta.down { background: var(--danger-soft); color: var(--danger); }
+
+  /* Progress */
+  .progress { height: 6px; background: var(--surface-3); border-radius: 999px; overflow: hidden; }
+  .progress > div {
+    height: 100%;
+    background: var(--grad);
+    border-radius: 999px;
+    box-shadow: 0 0 12px rgba(139,92,246,0.45);
+  }
+
+  /* Tables */
+  .table { width: 100%; border-collapse: collapse; }
+  .table th {
+    text-align: left;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    font-weight: 600;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 13.5px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .table tbody tr { transition: background 0.15s ease; }
+  .table tbody tr:hover { background: var(--hover); }
+  .table .num { font-feature-settings: 'tnum' 1; }
+
+  .section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+    font-weight: 600;
+    margin: 28px 0 12px;
+  }
+
+  /* Dashboard bento */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+  }
+  .bento .c-rent     { grid-column: span 6; grid-row: span 2; }
+  .bento .c-kpi      { grid-column: span 2; }
+  .bento .c-alerts   { grid-column: span 6; }
+  .bento .c-chart    { grid-column: span 7; }
+  .bento .c-events   { grid-column: span 5; }
+
+  .rent-card {
+    background:
+      radial-gradient(120% 80% at 100% 0%, rgba(139,92,246,0.18) 0%, transparent 55%),
+      radial-gradient(80% 60% at 0% 100%, rgba(99,102,241,0.12) 0%, transparent 60%),
+      var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 24px;
+    display: flex; gap: 24px; align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .rent-info { flex: 1; min-width: 0; }
+  .rent-info .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); font-weight: 600; }
+  .rent-info h2 { margin: 6px 0 2px; font-size: 36px; font-weight: 600; letter-spacing: -0.03em; color: #fff; font-feature-settings: 'tnum' 1; }
+  .rent-info h2 .unit { font-size: 16px; color: var(--text-3); font-weight: 500; margin-left: 4px; }
+  .rent-info .sub { font-size: 13.5px; color: var(--text-2); margin-bottom: 14px; }
+  .rent-meta {
+    display: flex; gap: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-soft);
+    flex-wrap: wrap;
+  }
+  .rent-meta div { display: flex; flex-direction: column; gap: 2px; }
+  .rent-meta .k { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 600; }
+  .rent-meta .v { font-size: 14px; color: var(--text); font-weight: 500; font-feature-settings: 'tnum' 1; }
+
+  .ring-wrap { position: relative; width: 130px; height: 130px; flex: none; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-track { stroke: var(--surface-3); }
+  .ring-fill { stroke: url(#grad-ring); stroke-linecap: round; }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .ring-center .pct { font-size: 28px; font-weight: 600; color: #fff; letter-spacing: -0.03em; line-height: 1; font-feature-settings: 'tnum' 1; }
+  .ring-center .pct .u { font-size: 14px; color: var(--text-3); font-weight: 500; }
+  .ring-center .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); font-weight: 600; margin-top: 4px; }
+
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 18px;
+    box-shadow: var(--shadow-1);
+    display: flex; flex-direction: column; gap: 4px;
+    min-height: 116px;
+    justify-content: space-between;
+  }
+  .kpi .icon { width: 32px; height: 32px; border-radius: 8px; background: var(--surface-3); display: grid; place-items: center; color: var(--text-2); margin-bottom: auto; }
+  .kpi .icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .kpi .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 600; margin-top: 10px; }
+  .kpi .val { font-size: 22px; font-weight: 600; letter-spacing: -0.025em; font-feature-settings: 'tnum' 1; }
+  .kpi .val .unit { font-size: 13px; color: var(--text-3); font-weight: 500; margin-left: 2px; }
+  .kpi .foot { font-size: 11.5px; color: var(--text-3); margin-top: 4px; }
+
+  /* Alerts */
+  .alert {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    border-left: 2px solid var(--text-3);
+    position: relative;
+  }
+  .alert + .alert { margin-top: 8px; }
+  .alert .ai { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; flex: none; }
+  .alert .ai svg { width: 14px; height: 14px; stroke-width: 1.9; }
+  .alert .ab { flex: 1; min-width: 0; }
+  .alert .at { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .alert .ad { font-size: 12px; color: var(--text-2); }
+  .alert.warning { border-left-color: var(--warning); background: linear-gradient(90deg, rgba(245,158,11,0.06) 0%, var(--surface-2) 60%); }
+  .alert.warning .ai { background: var(--warning-soft); color: var(--warning); }
+  .alert.info { border-left-color: var(--primary-2); background: linear-gradient(90deg, rgba(99,102,241,0.06) 0%, var(--surface-2) 60%); }
+  .alert.info .ai { background: var(--primary-soft); color: var(--primary-2); }
+  .alert.danger { border-left-color: var(--danger); background: linear-gradient(90deg, rgba(239,68,68,0.06) 0%, var(--surface-2) 60%); }
+  .alert.danger .ai { background: var(--danger-soft); color: var(--danger); }
+
+  /* Mini chart */
+  .chart {
+    display: flex; align-items: flex-end; gap: 14px;
+    height: 180px;
+    padding: 8px 4px 0;
+    position: relative;
+  }
+  .chart-grid { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+  .chart-grid > div { border-top: 1px dashed rgba(255,255,255,0.04); height: 0; }
+  .chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; }
+  .chart-bar {
+    width: 100%; max-width: 38px;
+    background: var(--grad-v);
+    border-radius: 6px 6px 0 0;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .chart-col:hover .chart-bar { filter: brightness(1.2); }
+  .chart-col:hover .chart-tip { opacity: 1; transform: translate(-50%, -8px); }
+  .chart-tip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%; transform: translate(-50%, 0);
+    background: #1a1a26;
+    border: 1px solid var(--border-hi);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.18s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    font-feature-settings: 'tnum' 1;
+  }
+  .chart-tip strong { color: #fff; font-weight: 600; }
+  .chart-lbl { font-size: 11px; color: var(--text-3); font-weight: 500; }
+
+  .events { display: flex; flex-direction: column; gap: 2px; }
+  .event { display: flex; align-items: center; gap: 14px; padding: 10px 4px; border-bottom: 1px solid var(--border-soft); }
+  .event:last-child { border-bottom: none; }
+  .event-date { flex: none; width: 44px; text-align: center; }
+  .event-date .d { font-size: 18px; font-weight: 600; color: var(--text); line-height: 1; font-feature-settings: 'tnum' 1; }
+  .event-date .m { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 600; margin-top: 3px; }
+  .event-body { flex: 1; min-width: 0; }
+  .event-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .event-sub { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+  /* Locataire */
+  .grid-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; }
+  .grid-2-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .profile-card {
+    background:
+      radial-gradient(80% 100% at 0% 0%, rgba(99,102,241,0.10) 0%, transparent 55%),
+      var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 22px;
+    display: flex; gap: 20px; align-items: center;
+  }
+  .avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--grad);
+    display: grid; place-items: center;
+    font-size: 22px; font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.02em;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.30), 0 1px 0 rgba(255,255,255,0.20) inset;
+    flex: none;
+  }
+  .avatar.sm { width: 36px; height: 36px; font-size: 13px; }
+  .avatar.alt { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 14px rgba(16,185,129,0.30), 0 1px 0 rgba(255,255,255,0.20) inset; }
+  .avatar.alt2 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 14px rgba(245,158,11,0.30), 0 1px 0 rgba(255,255,255,0.20) inset; }
+
+  .profile-info h2 { margin: 0 0 4px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .profile-info .meta { display: flex; gap: 12px; align-items: center; color: var(--text-2); font-size: 13px; flex-wrap: wrap; }
+  .profile-info .meta .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-4); }
+  .profile-actions { margin-left: auto; display: flex; gap: 8px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
+  .info-row { display: flex; flex-direction: column; gap: 4px; }
+  .info-row .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 600; }
+  .info-row .v { font-size: 14px; color: var(--text); font-weight: 500; }
+  .info-row .v.mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+  /* Documents */
+  .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .doc-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: all 0.18s ease;
+    cursor: pointer;
+  }
+  .doc-card:hover { border-color: var(--border-hi); transform: translateY(-1px); background: var(--surface); }
+  .doc-head { display: flex; align-items: center; justify-content: space-between; }
+  .doc-icon { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; background: var(--primary-soft); color: var(--primary-2); }
+  .doc-icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
+  .doc-icon.green { background: var(--success-soft); color: var(--success); }
+  .doc-icon.amber { background: var(--warning-soft); color: var(--warning); }
+  .doc-icon.gray  { background: rgba(255,255,255,0.05); color: var(--text-2); }
+  .doc-name { font-size: 13.5px; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .doc-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--text-3); }
+  .doc-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.18s ease; }
+  .doc-card:hover .doc-actions { opacity: 1; }
+  .icon-btn {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: all 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--hover); color: var(--text); }
+  .icon-btn svg { width: 14px; height: 14px; stroke-width: 1.8; }
+
+  /* Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .chip:hover { color: var(--text); border-color: var(--border-hi); }
+  .chip.active { background: var(--primary-soft); color: var(--text); border-color: rgba(99,102,241,0.35); }
+  .chip .count { font-size: 11px; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 999px; color: var(--text-3); }
+  .chip.active .count { background: rgba(99,102,241,0.25); color: var(--text); }
+
+  /* Finance chart */
+  .finance-chart { display: flex; align-items: flex-end; gap: 22px; height: 240px; padding-top: 10px; }
+  .fc-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .fc-pair { display: flex; align-items: flex-end; gap: 4px; width: 100%; max-width: 56px; height: 100%; }
+  .fc-bar {
+    flex: 1;
+    border-radius: 5px 5px 0 0;
+    transition: filter 0.18s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+  .fc-bar.income { background: linear-gradient(180deg, #6366f1 0%, rgba(99,102,241,0.20) 100%); }
+  .fc-bar.expense { background: linear-gradient(180deg, #f59e0b 0%, rgba(245,158,11,0.20) 100%); }
+  .fc-bar:hover { filter: brightness(1.15); }
+  .fc-lbl { font-size: 11px; color: var(--text-3); font-weight: 500; }
+  .legend { display: flex; gap: 18px; }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); }
+  .legend-dot { width: 9px; height: 9px; border-radius: 3px; }
+
+  .gauge-card {
+    background:
+      radial-gradient(60% 100% at 100% 0%, rgba(139,92,246,0.15) 0%, transparent 55%),
+      var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 22px;
+  }
+  .gauge-stats { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 14px; }
+  .gauge-stats .big { font-size: 36px; font-weight: 600; color: #fff; letter-spacing: -0.03em; font-feature-settings: 'tnum' 1; line-height: 1; }
+  .gauge-stats .big .unit { font-size: 16px; color: var(--text-3); font-weight: 500; }
+  .gauge-stats .of { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+  .gauge-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: var(--text-3); flex-wrap: wrap; gap: 8px; }
+
+  .work-item {
+    display: grid; grid-template-columns: 36px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .work-item:last-child { border-bottom: none; }
+  .work-icon { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; background: var(--surface-3); color: var(--text-2); }
+  .work-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .work-title { font-size: 14px; font-weight: 500; color: var(--text); }
+  .work-meta { font-size: 12px; color: var(--text-3); margin-top: 2px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .work-cost { font-size: 14px; font-weight: 600; color: var(--text); font-feature-settings: 'tnum' 1; text-align: right; }
+  .work-cost .est { font-size: 11px; color: var(--text-3); font-weight: 500; display: block; }
+
+  .timeline { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; padding: 14px 0 6px; position: relative; }
+  .tl-month { height: 56px; border-radius: 6px; background: var(--surface-3); position: relative; overflow: visible; }
+  .tl-month .lbl {
+    position: absolute; bottom: -22px; left: 0; right: 0;
+    text-align: center;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-3); font-weight: 600;
+  }
+  .tl-month.current { background: rgba(99,102,241,0.18); }
+  .tl-month.current::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 2px; background: var(--grad);
+    border-radius: 0 0 6px 6px;
+  }
+  .tl-bar {
+    position: absolute; left: 0; right: 0; height: 16px;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+    font-size: 10px; color: #fff; font-weight: 500;
+    padding: 0 6px;
+    display: flex; align-items: center;
+    white-space: nowrap; overflow: hidden;
+  }
+  .tl-bar.done { background: linear-gradient(90deg, #10b981, #059669); top: 6px; }
+  .tl-bar.progress { background: linear-gradient(90deg, #f59e0b, #d97706); top: 26px; }
+  .tl-bar.planned { background: linear-gradient(90deg, rgba(99,102,241,0.7), rgba(139,92,246,0.7)); top: 46px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi-flat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 18px;
+    box-shadow: var(--shadow-1);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .kpi-flat .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 600; }
+  .kpi-flat .val { font-size: 24px; font-weight: 600; letter-spacing: -0.025em; font-feature-settings: 'tnum' 1; }
+  .kpi-flat .foot { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-3); }
+
+  .search {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 7px 12px;
+    width: 280px;
+    transition: all 0.18s ease;
+  }
+  .search:focus-within { border-color: rgba(99,102,241,0.45); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+  .search svg { width: 14px; height: 14px; color: var(--text-3); stroke-width: 2; }
+  .search input { background: transparent; border: none; outline: none; color: var(--text); font-family: inherit; font-size: 13px; flex: 1; width: 100%; }
+  .search input::placeholder { color: var(--text-3); }
+
+  /* ════════════════════════════════════════════════
+     ACCESS MANAGEMENT
+     ════════════════════════════════════════════════ */
+  .member-row {
+    display: grid;
+    grid-template-columns: 36px 1fr auto auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .member-row:last-child { border-bottom: none; }
+  .member-row .nm-block { min-width: 0; }
+  .member-row .nm { font-size: 14px; font-weight: 500; color: var(--text); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .member-row .em { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+  .member-row .added { font-size: 12px; color: var(--text-3); font-feature-settings: 'tnum' 1; }
+  .role-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11.5px; font-weight: 500;
+    background: var(--surface-3);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .role-pill.owner { background: var(--primary-soft); color: var(--primary-2); border-color: rgba(139,92,246,0.30); }
+  .role-pill.manager { background: var(--success-soft); color: var(--success); border-color: rgba(16,185,129,0.30); }
+  .role-pill.viewer { background: rgba(255,255,255,0.04); color: var(--text-2); }
+  .role-pill svg { width: 11px; height: 11px; stroke-width: 2; }
+
+  .invite-form {
+    display: grid;
+    grid-template-columns: 1fr 180px auto;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .select {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-hi);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13.5px;
+    padding: 10px 12px;
+    border-radius: var(--r-md);
+    transition: all 0.18s ease;
+    outline: none;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
+    padding-right: 32px;
+  }
+  .select:focus {
+    border-color: rgba(99,102,241,0.55);
+    background-color: rgba(255,255,255,0.05);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  }
+
+  .pending-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px dashed var(--border-hi);
+    border-radius: var(--r-md);
+  }
+  .pending-row .ico {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    color: var(--text-2);
+    display: grid; place-items: center;
+    flex: none;
+    border: 1px dashed var(--border-hi);
+  }
+  .pending-row .ico svg { width: 14px; height: 14px; }
+  .pending-row .em { flex: 1; font-size: 13.5px; color: var(--text); min-width: 0; word-break: break-word; }
+  .pending-row .em .sub { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+  .role-explain {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .role-explain .it {
+    padding: 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+  }
+  .role-explain .it .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .role-explain .it .nm { font-size: 13px; font-weight: 600; }
+  .role-explain .it .desc { font-size: 12.5px; color: var(--text-2); line-height: 1.5; }
+
+  /* ════════════════════════════════════════════════
+     RESPONSIVE
+     ════════════════════════════════════════════════ */
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 64px 1fr; }
+    .sidebar { padding: 18px 8px; }
+    .sidebar .floreo-word, .nav-item span:not(.badge), .property-info-mini, .nav-section-label, .back-link .nm { display: none; }
+    .back-link { justify-content: center; padding: 8px; }
+    .nav-item { justify-content: center; padding: 10px; }
+    .nav-item.active::before { left: -8px; }
+    .property-card-mini { padding: 8px; justify-content: center; }
+    .main { padding: 24px; }
+    .bento .c-rent { grid-column: span 12; grid-row: auto; }
+    .bento .c-kpi { grid-column: span 4; }
+    .bento .c-alerts, .bento .c-chart, .bento .c-events { grid-column: span 12; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .grid-2-eq { grid-template-columns: 1fr; }
+    .prop-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .plan.featured { transform: none; }
+    .invite-form { grid-template-columns: 1fr; }
+    .role-explain { grid-template-columns: 1fr; }
+    .mockup-body { height: 320px; }
+    .land-nav .nav-links { display: none; }
+  }
+  @media (max-width: 720px) {
+    .land-wrap, .sel-main { padding-left: 20px; padding-right: 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .bento .c-kpi { grid-column: span 12; }
+    .hero { padding: 50px 0 60px; }
+    .hero-mockup { display: none; }
+    .info-grid { grid-template-columns: 1fr; }
+    .member-row { grid-template-columns: 36px 1fr auto; }
+    .member-row .added { display: none; }
+    .timeline { grid-template-columns: repeat(6, 1fr); }
+    .page-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="grad-ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="floreo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <symbol id="floreo-leaf" viewBox="0 0 60 100">
+      <path d="M30 5 A 50 50 0 0 1 30 95 A 50 50 0 0 1 30 5 Z" fill="url(#floreo-grad)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ════════════════════════════════════════════════
+     LANDING
+     ════════════════════════════════════════════════ -->
+<div class="view active" id="view-landing" data-screen-label="Landing">
+<div class="landing-bg">
+
+  <div class="land-wrap">
+    <nav class="land-nav">
+      <div class="floreo-logo" onclick="go('landing')">
+        <svg class="floreo-mark" viewBox="0 0 60 100" aria-hidden="true"><use href="#floreo-leaf"/></svg>
+        <span class="floreo-word"><span class="f">f</span>loreo</span>
+      </div>
+      <div class="nav-links">
+        <a href="#features">Fonctionnalités</a>
+        <a href="#pricing">Tarifs</a>
+        <a href="#">Documentation</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="go('auth'); setAuthMode('login')">Se connecter</button>
+        <button class="btn btn-primary" onclick="go('auth'); setAuthMode('register')">
+          Commencer gratuitement
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-eyebrow">
+        <span class="tag">Nouveau</span>
+        Multi-propriétés et accès collaboratifs
+      </div>
+      <h1>Votre patrimoine locatif,<br/><span class="accent">enfin ordonné.</span></h1>
+      <p class="lead">FLOREO réunit tout ce qu'un investisseur sérieux a besoin : loyers, travaux, documents, accès — dans un seul outil moderne.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-lg" onclick="go('auth'); setAuthMode('register')">
+          Créer mon compte
+          <i data-lucide="arrow-right"></i>
+        </button>
+        <button class="btn btn-lg">
+          <i data-lucide="play"></i>
+          Voir la démo
+        </button>
+      </div>
+
+      <!-- App mockup -->
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <div class="url">floreo.app / dashboard</div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-side">
+            <div class="mockup-side-item act"><div class="ph"></div><div class="bar"></div></div>
+            <div class="mockup-side-item"><div class="ph"></div><div class="bar"></div></div>
+            <div class="mockup-side-item"><div class="ph"></div><div class="bar"></div></div>
+            <div class="mockup-side-item"><div class="ph"></div><div class="bar"></div></div>
+            <div class="mockup-side-item"><div class="ph"></div><div class="bar"></div></div>
+            <div class="mockup-side-item"><div class="ph"></div><div class="bar"></div></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-row">
+              <div class="mockup-tile big">
+                <div class="label"></div>
+                <div class="value">600 €</div>
+                <div style="display:flex; gap:8px; margin-top:6px;">
+                  <span style="font-size:10px; padding:2px 8px; border-radius:999px; background:var(--success-soft); color:var(--success); font-weight:500;">● Payé</span>
+                </div>
+              </div>
+              <div class="mockup-tile">
+                <div class="label"></div>
+                <div class="value">6 600<span style="font-size:14px;color:var(--text-3);">€</span></div>
+              </div>
+              <div class="mockup-tile">
+                <div class="label"></div>
+                <div class="value">4,8<span style="font-size:14px;color:var(--text-3);">%</span></div>
+              </div>
+              <div class="mockup-tile">
+                <div class="label"></div>
+                <div class="value">28<span style="font-size:14px;color:var(--text-3);">j</span></div>
+              </div>
+            </div>
+            <div class="mockup-chart">
+              <div class="bar" style="height: 60%;"></div>
+              <div class="bar" style="height: 80%;"></div>
+              <div class="bar" style="height: 45%;"></div>
+              <div class="bar" style="height: 90%;"></div>
+              <div class="bar" style="height: 70%;"></div>
+              <div class="bar" style="height: 95%;"></div>
+              <div class="bar" style="height: 55%;"></div>
+              <div class="bar" style="height: 85%;"></div>
+              <div class="bar" style="height: 75%;"></div>
+              <div class="bar" style="height: 65%;"></div>
+              <div class="bar" style="height: 88%;"></div>
+              <div class="bar" style="height: 50%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="sect" id="features">
+      <div class="sect-h">
+        <div class="eyebrow">Ce que FLOREO fait pour vous</div>
+        <h2>Tout votre patrimoine, dans une seule application</h2>
+        <p>Six modules conçus pour couvrir l'intégralité du cycle de vie d'un bien locatif.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="ico"><i data-lucide="layout-dashboard"></i></div>
+          <h3>Dashboard temps réel</h3>
+          <p>Statut du loyer, rendement, alertes et prochaines échéances en un coup d'œil.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><i data-lucide="building-2"></i></div>
+          <h3>Multi-propriétés</h3>
+          <p>Gérez plusieurs biens depuis un seul compte. Basculez d'une propriété à l'autre en un clic.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><i data-lucide="banknote"></i></div>
+          <h3>Suivi des loyers</h3>
+          <p>Historique des paiements, génération de quittances automatique, alertes en cas de retard.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><i data-lucide="wrench"></i></div>
+          <h3>Gestion des travaux</h3>
+          <p>Budget annuel, suivi des interventions, carnet de prestataires, timeline visuelle.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><i data-lucide="folder-open"></i></div>
+          <h3>Bibliothèque documents</h3>
+          <p>Baux, états des lieux, quittances, factures — tout est classé, recherchable, à portée de clic.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><i data-lucide="users"></i></div>
+          <h3>Collaboration</h3>
+          <p>Invitez votre comptable, votre notaire ou un co-propriétaire avec des accès granulaires.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="sect" id="pricing">
+      <div class="sect-h">
+        <div class="eyebrow">Tarifs</div>
+        <h2>Investissez malin, gérez mieux</h2>
+        <p>Trois plans qui grandissent avec votre patrimoine. Aucune carte bancaire requise pour démarrer.</p>
+      </div>
+      <div class="pricing-grid">
+
+        <div class="plan">
+          <h3>Graine</h3>
+          <div class="tagline">Pour démarrer en douceur</div>
+          <div class="price">
+            <span class="amount">0 €</span>
+            <span class="per">/ mois</span>
+          </div>
+          <ul>
+            <li><i data-lucide="check"></i> 1 bien immobilier</li>
+            <li><i data-lucide="check"></i> Suivi des loyers</li>
+            <li><i data-lucide="check"></i> Bibliothèque de documents (1 Go)</li>
+            <li><i data-lucide="check"></i> Génération de quittances</li>
+            <li class="dim"><i data-lucide="x"></i> Collaboration multi-utilisateurs</li>
+            <li class="dim"><i data-lucide="x"></i> Export comptable avancé</li>
+          </ul>
+          <button class="btn btn-block btn-lg" onclick="go('auth'); setAuthMode('register')">Commencer gratuitement</button>
+        </div>
+
+        <div class="plan featured">
+          <div class="featured-tag">Le plus populaire</div>
+          <h3>Pousse</h3>
+          <div class="tagline">Pour les bailleurs actifs</div>
+          <div class="price">
+            <span class="amount">9 €</span>
+            <span class="per">/ mois</span>
+          </div>
+          <ul>
+            <li><i data-lucide="check"></i> Jusqu'à 5 biens</li>
+            <li><i data-lucide="check"></i> Tout du plan Graine</li>
+            <li><i data-lucide="check"></i> 3 collaborateurs par bien</li>
+            <li><i data-lucide="check"></i> Stockage 20 Go</li>
+            <li><i data-lucide="check"></i> Export comptable & fiscal</li>
+            <li><i data-lucide="check"></i> Support prioritaire par email</li>
+          </ul>
+          <button class="btn btn-primary btn-block btn-lg" onclick="go('auth'); setAuthMode('register')">Choisir Pousse</button>
+        </div>
+
+        <div class="plan">
+          <h3>Florissant</h3>
+          <div class="tagline">Pour les portefeuilles étendus</div>
+          <div class="price">
+            <span class="amount">24 €</span>
+            <span class="per">/ mois</span>
+          </div>
+          <ul>
+            <li><i data-lucide="check"></i> Biens illimités</li>
+            <li><i data-lucide="check"></i> Tout du plan Pousse</li>
+            <li><i data-lucide="check"></i> Collaborateurs illimités</li>
+            <li><i data-lucide="check"></i> Stockage illimité</li>
+            <li><i data-lucide="check"></i> API & intégrations bancaires</li>
+            <li><i data-lucide="check"></i> Support dédié</li>
+          </ul>
+          <button class="btn btn-block btn-lg" onclick="go('auth'); setAuthMode('register')">Choisir Florissant</button>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="land-footer">
+      <div>© 2026 FLOREO · Tous droits réservés</div>
+      <div class="links">
+        <a href="#">Conditions générales</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">Mentions légales</a>
+        <a href="#">Statut</a>
+      </div>
+    </footer>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     AUTH
+     ════════════════════════════════════════════════ -->
+<div class="view" id="view-auth" data-screen-label="Auth">
+<div class="auth-bg">
+  <a class="auth-back" onclick="go('landing')"><i data-lucide="arrow-left"></i> Retour</a>
+
+  <div class="auth-card">
+    <div class="auth-head">
+      <div class="floreo-logo v" onclick="go('landing')">
+        <svg class="floreo-mark" viewBox="0 0 60 100" aria-hidden="true"><use href="#floreo-leaf"/></svg>
+        <span class="floreo-word"><span class="f">f</span>loreo</span>
+      </div>
+    </div>
+
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" data-mode="login" onclick="setAuthMode('login')">Se connecter</button>
+      <button type="button" class="auth-tab" data-mode="register" onclick="setAuthMode('register')">S'inscrire</button>
+    </div>
+
+    <!-- LOGIN form -->
+    <form class="form" id="form-login" onsubmit="event.preventDefault(); simulateLogin()">
+      <div class="field">
+        <label for="li-email">Email</label>
+        <input class="input" id="li-email" type="email" placeholder="vous@exemple.com" value="rowin@example.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="li-pass">
+          Mot de passe
+          <span class="hint">Mot de passe oublié ?</span>
+        </label>
+        <input class="input" id="li-pass" type="password" placeholder="••••••••" value="••••••••" autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 6px;">
+        Se connecter
+        <i data-lucide="arrow-right"></i>
+      </button>
+      <div class="divider">ou</div>
+      <button type="button" class="btn btn-block">
+        <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+          <path d="M17.64 9.20455c0-.63818-.0573-1.25182-.1636-1.84091H9v3.48136h4.8436c-.2086 1.125-.8427 2.07818-1.7959 2.71636v2.25818h2.9087c1.7018-1.56682 2.6836-3.87409 2.6836-6.61499z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.4673-.80591 5.9564-2.18045l-2.9087-2.25818c-.8059.54-1.8368.85909-3.0477.85909-2.3441 0-4.32818-1.58318-5.03591-3.71045H.957275v2.33182C2.43818 15.9832 5.48182 18 9 18z" fill="#34A853"/>
+          <path d="M3.96409 10.71c-.18-.54-.28227-1.11682-.28227-1.71s.10227-1.17.28227-1.71V4.95818H.957273C.347727 6.17318 0 7.54773 0 9s.347727 2.82682.957273 4.04182L3.96409 10.71z" fill="#FBBC05"/>
+          <path d="M9 3.57955c1.32136 0 2.50773.45409 3.4405 1.34591l2.5814-2.58136C13.4632.890455 11.4259 0 9 0 5.48182 0 2.43818 2.01682.957275 4.95818L3.96409 7.29c.70773-2.12727 2.69181-3.71045 5.03591-3.71045z" fill="#EA4335"/>
+        </svg>
+        Continuer avec Google
+      </button>
+      <div class="auth-foot">
+        Pas encore de compte ?<a onclick="setAuthMode('register')">S'inscrire</a>
+      </div>
+    </form>
+
+    <!-- REGISTER form -->
+    <form class="form" id="form-register" style="display:none" onsubmit="event.preventDefault(); simulateLogin()">
+      <div class="field-row">
+        <div class="field">
+          <label for="ri-fn">Prénom</label>
+          <input class="input" id="ri-fn" type="text" placeholder="Rowin" />
+        </div>
+        <div class="field">
+          <label for="ri-ln">Nom</label>
+          <input class="input" id="ri-ln" type="text" placeholder="Raffaillac" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="ri-email">Email</label>
+        <input class="input" id="ri-email" type="email" placeholder="vous@exemple.com" />
+      </div>
+      <div class="field">
+        <label for="ri-pass">Mot de passe</label>
+        <input class="input error" id="ri-pass" type="password" value="abc12" />
+        <div class="field-error"><i data-lucide="alert-circle"></i> 8 caractères minimum, dont 1 chiffre</div>
+      </div>
+      <div class="field">
+        <label for="ri-pass2">Confirmation</label>
+        <input class="input" id="ri-pass2" type="password" placeholder="••••••••" />
+      </div>
+      <label class="check" style="margin-top: 4px;">
+        <input type="checkbox" checked />
+        <span class="box"><i data-lucide="check"></i></span>
+        <span>J'accepte les <a>conditions générales</a> et la <a>politique de confidentialité</a>.</span>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 6px;">
+        Créer mon compte
+        <i data-lucide="arrow-right"></i>
+      </button>
+      <div class="divider">ou</div>
+      <button type="button" class="btn btn-block">
+        <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+          <path d="M17.64 9.20455c0-.63818-.0573-1.25182-.1636-1.84091H9v3.48136h4.8436c-.2086 1.125-.8427 2.07818-1.7959 2.71636v2.25818h2.9087c1.7018-1.56682 2.6836-3.87409 2.6836-6.61499z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.4673-.80591 5.9564-2.18045l-2.9087-2.25818c-.8059.54-1.8368.85909-3.0477.85909-2.3441 0-4.32818-1.58318-5.03591-3.71045H.957275v2.33182C2.43818 15.9832 5.48182 18 9 18z" fill="#34A853"/>
+          <path d="M3.96409 10.71c-.18-.54-.28227-1.11682-.28227-1.71s.10227-1.17.28227-1.71V4.95818H.957273C.347727 6.17318 0 7.54773 0 9s.347727 2.82682.957273 4.04182L3.96409 10.71z" fill="#FBBC05"/>
+          <path d="M9 3.57955c1.32136 0 2.50773.45409 3.4405 1.34591l2.5814-2.58136C13.4632.890455 11.4259 0 9 0 5.48182 0 2.43818 2.01682.957275 4.95818L3.96409 7.29c.70773-2.12727 2.69181-3.71045 5.03591-3.71045z" fill="#EA4335"/>
+        </svg>
+        S'inscrire avec Google
+      </button>
+      <div class="auth-foot">
+        Déjà un compte ?<a onclick="setAuthMode('login')">Se connecter</a>
+      </div>
+    </form>
+
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PROPERTY SELECTOR
+     ════════════════════════════════════════════════ -->
+<div class="view" id="view-selector" data-screen-label="Selector">
+<div class="sel-bg">
+
+  <div class="top-bar">
+    <div class="floreo-logo sm" onclick="go('selector')">
+      <svg class="floreo-mark" viewBox="0 0 60 100" aria-hidden="true"><use href="#floreo-leaf"/></svg>
+      <span class="floreo-word"><span class="f">f</span>loreo</span>
+    </div>
+    <div class="topbar-crumb">Mes propriétés</div>
+    <div class="user-menu" id="user-menu" onclick="this.classList.toggle('open'); event.stopPropagation()">
+      <div class="avatar sm">RR</div>
+      <div class="uname">Rowin Raffaillac</div>
+      <i data-lucide="chevron-down" class="chev"></i>
+      <div class="dropdown" onclick="event.stopPropagation()">
+        <div class="dropdown-head">
+          <div class="nm">Rowin Raffaillac</div>
+          <div class="em">rowin@example.com</div>
+        </div>
+        <div class="dropdown-item"><i data-lucide="user"></i> Mon profil</div>
+        <div class="dropdown-item"><i data-lucide="credit-card"></i> Abonnement <span class="badge-pill badge-info" style="margin-left:auto;">Pro</span></div>
+        <div class="dropdown-item"><i data-lucide="settings"></i> Paramètres</div>
+        <div class="dropdown-item"><i data-lucide="life-buoy"></i> Aide</div>
+        <div style="height:1px; background:var(--border-soft); margin:4px 0;"></div>
+        <div class="dropdown-item danger" onclick="go('landing')"><i data-lucide="log-out"></i> Se déconnecter</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sel-main">
+    <div class="sel-head">
+      <div class="ti">
+        <h1>Mes propriétés</h1>
+        <p>Bonjour Rowin, sélectionnez un bien pour accéder à sa gestion.</p>
+      </div>
+      <button class="btn btn-primary">
+        <i data-lucide="plus"></i>
+        Ajouter un bien
+      </button>
+    </div>
+
+    <div class="prop-grid">
+
+      <!-- Property 1 -->
+      <div class="prop-card" onclick="openProperty('faubourg')">
+        <div class="prop-thumb">
+          <div class="glyph"><i data-lucide="building-2"></i></div>
+          <div class="health"><span class="badge-pill badge-success"><span class="dot"></span>Loyers à jour</span></div>
+        </div>
+        <div class="prop-body">
+          <div>
+            <div class="addr">12 Rue de la République</div>
+            <h3>Appartement Brive</h3>
+            <div class="city">Brive-la-Gaillarde · 19100</div>
+          </div>
+          <div class="prop-meta">
+            <div class="it"><i data-lucide="square-dashed"></i> 58 m²</div>
+            <div class="sep"></div>
+            <div class="it"><i data-lucide="bed"></i> 3 pièces</div>
+            <div class="sep"></div>
+            <div class="it"><i data-lucide="home"></i> Appartement</div>
+          </div>
+          <div class="prop-foot">
+            <div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="badge-pill badge-success"><span class="dot"></span>Occupé</span>
+                <span style="font-size:12px; color:var(--text-3);">depuis 32 mois</span>
+              </div>
+              <div class="rent" style="margin-top: 6px;">
+                <span class="v">550 € <span style="font-size:11px; color:var(--text-3); font-weight:500;">HC / mois</span></span>
+                <span class="l">Thomas Martin</span>
+              </div>
+            </div>
+            <button class="btn btn-primary">
+              Gérer
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property 2 -->
+      <div class="prop-card" onclick="openProperty('aubazine')">
+        <div class="prop-thumb">
+          <div class="glyph"><i data-lucide="building"></i></div>
+          <div class="health"><span class="badge-pill badge-warning"><span class="dot"></span>En recherche de locataire</span></div>
+        </div>
+        <div class="prop-body">
+          <div>
+            <div class="addr">8 Avenue du Quercy</div>
+            <h3>Studio Tulle</h3>
+            <div class="city">Tulle · 19000</div>
+          </div>
+          <div class="prop-meta">
+            <div class="it"><i data-lucide="square-dashed"></i> 28 m²</div>
+            <div class="sep"></div>
+            <div class="it"><i data-lucide="bed"></i> 1 pièce</div>
+            <div class="sep"></div>
+            <div class="it"><i data-lucide="home"></i> Studio</div>
+          </div>
+          <div class="prop-foot">
+            <div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="badge-pill badge-danger"><span class="dot"></span>Vacant</span>
+                <span style="font-size:12px; color:var(--text-3);">depuis 18 jours</span>
+              </div>
+              <div class="rent" style="margin-top: 6px;">
+                <span class="v">380 € <span style="font-size:11px; color:var(--text-3); font-weight:500;">HC / mois</span></span>
+                <span class="l">Loyer cible</span>
+              </div>
+            </div>
+            <button class="btn">
+              Gérer
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add card -->
+      <div class="prop-card-add">
+        <div class="inner">
+          <div class="ico"><i data-lucide="plus"></i></div>
+          <h4>Ajouter un bien</h4>
+          <p>Maison, appartement, studio…</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     APP (sidebar + main)
+     ════════════════════════════════════════════════ -->
+<div class="view" id="view-app" data-screen-label="App">
+<div class="app">
+
+  <!-- ─────────── SIDEBAR ─────────── -->
+  <aside class="sidebar">
+    <div class="floreo-logo sidebar-brand" onclick="go('selector')" style="padding: 6px 10px 16px;">
+      <svg class="floreo-mark" viewBox="0 0 60 100" aria-hidden="true"><use href="#floreo-leaf"/></svg>
+      <span class="floreo-word"><span class="f">f</span>loreo</span>
+    </div>
+
+    <button class="back-link" onclick="go('selector')">
+      <i data-lucide="arrow-left"></i>
+      <span class="nm">Mes propriétés</span>
+    </button>
+
+    <div class="nav-section-label">Appartement Brive</div>
+    <nav class="nav">
+      <button class="nav-item active" data-page="dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Tableau de bord</span>
+      </button>
+      <button class="nav-item" data-page="locataire">
+        <i data-lucide="user-round"></i>
+        <span>Locataire</span>
+      </button>
+      <button class="nav-item" data-page="finances">
+        <i data-lucide="line-chart"></i>
+        <span>Finances</span>
+      </button>
+      <button class="nav-item" data-page="travaux">
+        <i data-lucide="wrench"></i>
+        <span>Travaux</span>
+        <span class="badge">3</span>
+      </button>
+      <button class="nav-item" data-page="documents">
+        <i data-lucide="folder-open"></i>
+        <span>Documents</span>
+      </button>
+      <button class="nav-item" data-page="acces">
+        <i data-lucide="users"></i>
+        <span>Gestion des accès</span>
+      </button>
+    </nav>
+
+    <div class="nav-section-label">Compte</div>
+    <nav class="nav">
+      <button class="nav-item">
+        <i data-lucide="bell"></i>
+        <span>Notifications</span>
+      </button>
+      <button class="nav-item">
+        <i data-lucide="settings"></i>
+        <span>Paramètres</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="property-card-mini">
+        <div class="property-thumb-mini"><i data-lucide="building-2"></i></div>
+        <div class="property-info-mini">
+          <div class="t1">Appartement Brive</div>
+          <div class="t2"><span class="dot-online"></span>58m² · Brive 19100</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─────────── MAIN ─────────── -->
+  <main class="main">
+
+    <!-- ════════ DASHBOARD ════════ -->
+    <section class="page active" id="page-dashboard" data-screen-label="Dashboard">
+      <div class="breadcrumb">
+        <a onclick="go('selector')">Mes propriétés</a>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Appartement Brive</span>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Tableau de bord</span>
+      </div>
+
+      <header class="page-header">
+        <div class="page-title-block">
+          <div class="crumb">Vue d'ensemble · Mai 2026</div>
+          <h1>Bonjour Rowin</h1>
+          <div class="sub">Voici l'état de votre bien à Brive ce mois-ci.</div>
+        </div>
+        <div class="page-actions">
+          <div class="search">
+            <i data-lucide="search"></i>
+            <input placeholder="Rechercher…" />
+          </div>
+          <button class="btn btn-ghost btn-icon" aria-label="Notifications">
+            <i data-lucide="bell"></i>
+          </button>
+          <button class="btn btn-primary">
+            <i data-lucide="plus"></i>
+            Enregistrer un paiement
+          </button>
+        </div>
+      </header>
+
+      <div class="bento">
+        <div class="c-rent rent-card">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 132 132" width="130" height="130">
+              <circle class="ring-track" cx="66" cy="66" r="56" fill="none" stroke-width="10"></circle>
+              <circle cx="66" cy="66" r="56" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round" stroke-dasharray="351.86 351.86" style="filter: drop-shadow(0 0 12px rgba(16,185,129,0.5)); transform: rotate(-90deg); transform-origin: center;"></circle>
+            </svg>
+            <div class="ring-center">
+              <div style="width:42px; height:42px; border-radius:50%; background:rgba(16,185,129,0.18); display:grid; place-items:center; color:#10b981; box-shadow: 0 0 0 1px rgba(16,185,129,0.25), inset 0 1px 0 rgba(255,255,255,0.10);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="lbl" style="color:#10b981; margin-top: 8px;">Payé</div>
+            </div>
+          </div>
+          <div class="rent-info">
+            <div class="label">Loyer de mai 2026</div>
+            <h2>600 <span class="unit">€</span></h2>
+            <div class="sub" style="display:flex; align-items:center; gap:10px;">
+              <span class="badge-pill badge-success"><span class="dot"></span>Payé</span>
+              <span style="color: var(--text-3);">Reçu le <strong style="color: var(--text-2); font-weight:500;">3 mai 2026</strong> · Thomas Martin</span>
+            </div>
+            <div class="rent-meta">
+              <div><span class="k">Loyer HC</span><span class="v">550,00 €</span></div>
+              <div><span class="k">Provisions</span><span class="v">50,00 €</span></div>
+              <div><span class="k">Encaissé YTD</span><span class="v">3 000,00 €</span></div>
+              <div><span class="k">Impayés</span><span class="v" style="color: var(--success);">0,00 €</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="c-kpi kpi is-emerald">
+          <div class="icon" style="background: var(--success-soft); color: var(--success);"><i data-lucide="banknote"></i></div>
+          <div class="label">Loyer annuel</div>
+          <div class="val">6 600<span class="unit">€</span></div>
+          <div class="foot">12 mois HC théoriques</div>
+        </div>
+        <div class="c-kpi kpi is-emerald">
+          <div class="icon" style="background: var(--success-soft); color: var(--success);"><i data-lucide="trending-up"></i></div>
+          <div class="label">Rendement brut</div>
+          <div class="val">4,8<span class="unit">%</span></div>
+          <div class="foot">Prix d'acquisition 138 k€</div>
+        </div>
+        <div class="c-kpi kpi">
+          <div class="icon" style="background: var(--primary-soft); color: var(--primary-2);"><i data-lucide="calendar-clock"></i></div>
+          <div class="label">Prochaine échéance</div>
+          <div class="val">28<span class="unit">j</span></div>
+          <div class="foot">Loyer 1<sup>er</sup> juin 2026</div>
+        </div>
+
+        <div class="c-alerts card">
+          <div class="card-h">
+            <div class="card-title">Alertes actives</div>
+            <a class="card-link">2 actives <i data-lucide="chevron-right"></i></a>
+          </div>
+          <div class="alert warning">
+            <div class="ai"><i data-lucide="trending-up"></i></div>
+            <div class="ab">
+              <div class="at">Révision du loyer à prévoir</div>
+              <div class="ad">Indice IRL T3 2025 · échéance le 1<sup>er</sup> sept. 2026 (dans 2 mois)</div>
+            </div>
+            <button class="icon-btn"><i data-lucide="more-horizontal"></i></button>
+          </div>
+          <div class="alert warning">
+            <div class="ai"><i data-lucide="shield-alert"></i></div>
+            <div class="ab">
+              <div class="at">Assurance PNO à renouveler</div>
+              <div class="ad">Échéance le 15 juillet 2026 · Allianz Habitat · 142 € / an</div>
+            </div>
+            <button class="icon-btn"><i data-lucide="more-horizontal"></i></button>
+          </div>
+        </div>
+
+        <div class="c-chart card">
+          <div class="card-h">
+            <div class="card-title">Loyers — 6 derniers mois</div>
+            <div style="display:flex; gap: 8px;">
+              <button class="btn btn-ghost btn-sm">6M</button>
+              <button class="btn btn-ghost btn-sm">1A</button>
+              <button class="btn btn-ghost btn-sm">Tout</button>
+            </div>
+          </div>
+          <div class="chart">
+            <div class="chart-grid"><div></div><div></div><div></div><div></div></div>
+            <div class="chart-col"><div class="chart-tip"><strong>600 €</strong> · Payé</div><div class="chart-bar" style="height: 85%"></div><div class="chart-lbl">Déc</div></div>
+            <div class="chart-col"><div class="chart-tip"><strong>600 €</strong> · Payé en retard</div><div class="chart-bar" style="height: 85%; background: linear-gradient(180deg, rgba(239,68,68,0.85) 0%, rgba(239,68,68,0.10) 100%);"></div><div class="chart-lbl">Jan</div></div>
+            <div class="chart-col"><div class="chart-tip"><strong>600 €</strong> · Payé</div><div class="chart-bar" style="height: 85%"></div><div class="chart-lbl">Fév</div></div>
+            <div class="chart-col"><div class="chart-tip"><strong>600 €</strong> · Payé</div><div class="chart-bar" style="height: 85%"></div><div class="chart-lbl">Mar</div></div>
+            <div class="chart-col"><div class="chart-tip"><strong>600 €</strong> · Payé</div><div class="chart-bar" style="height: 85%"></div><div class="chart-lbl">Avr</div></div>
+            <div class="chart-col"><div class="chart-tip"><strong>600 €</strong> · En attente</div><div class="chart-bar" style="height: 85%; background: linear-gradient(180deg, rgba(245,158,11,0.85) 0%, rgba(245,158,11,0.10) 100%);"></div><div class="chart-lbl">Mai</div></div>
+          </div>
+        </div>
+
+        <div class="c-events card">
+          <div class="card-h">
+            <div class="card-title">Prochains événements</div>
+            <a class="card-link">Calendrier <i data-lucide="chevron-right"></i></a>
+          </div>
+          <div class="events">
+            <div class="event">
+              <div class="event-date"><div class="d">01</div><div class="m">Juin</div></div>
+              <div class="event-body">
+                <div class="event-title">Échéance loyer juin 2026</div>
+                <div class="event-sub">600 € · prélèvement automatique</div>
+              </div>
+              <span class="badge-pill badge-info"><span class="dot"></span>Récurrent</span>
+            </div>
+            <div class="event">
+              <div class="event-date"><div class="d">20</div><div class="m">Juin</div></div>
+              <div class="event-body">
+                <div class="event-title">Fin peinture salon</div>
+                <div class="event-sub">Atelier Roussel · solde 800 €</div>
+              </div>
+              <span class="badge-pill badge-warning"><span class="dot"></span>En cours</span>
+            </div>
+            <div class="event">
+              <div class="event-date"><div class="d">15</div><div class="m">Juil</div></div>
+              <div class="event-body">
+                <div class="event-title">Renouvellement assurance PNO</div>
+                <div class="event-sub">Allianz Habitat · 142 € / an</div>
+              </div>
+              <span class="badge-pill badge-warning"><span class="dot"></span>À traiter</span>
+            </div>
+            <div class="event">
+              <div class="event-date"><div class="d">01</div><div class="m">Sep</div></div>
+              <div class="event-body">
+                <div class="event-title">Révision IRL du loyer</div>
+                <div class="event-sub">Loyer estimé : 562 € HC (+2,1 %)</div>
+              </div>
+              <span class="badge-pill badge-info"><span class="dot"></span>À préparer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ LOCATAIRE ════════ -->
+    <section class="page" id="page-locataire" data-screen-label="Locataire">
+      <div class="breadcrumb">
+        <a onclick="go('selector')">Mes propriétés</a>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Appartement Brive</span>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Locataire</span>
+      </div>
+
+      <header class="page-header">
+        <div class="page-title-block">
+          <div class="crumb">Bail · Appartement Brive</div>
+          <h1>Locataire</h1>
+          <div class="sub">Toutes les informations relatives au bail en cours.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn"><i data-lucide="mail"></i> Contacter</button>
+          <button class="btn"><i data-lucide="file-text"></i> Générer quittance</button>
+          <button class="btn btn-primary"><i data-lucide="pencil"></i> Modifier</button>
+        </div>
+      </header>
+
+      <div class="profile-card" style="margin-bottom: 16px;">
+        <div class="avatar">TM</div>
+        <div class="profile-info">
+          <h2>Thomas Martin</h2>
+          <div class="meta">
+            <span class="badge-pill badge-success"><span class="dot"></span>Bail actif</span>
+            <span class="sep"></span>
+            <span>Locataire depuis 32 mois</span>
+            <span class="sep"></span>
+            <span>Bail n° <span style="color:var(--text); font-family:'JetBrains Mono', monospace; font-size: 12px;">BL-2023-09-FB</span></span>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-ghost btn-icon"><i data-lucide="phone"></i></button>
+          <button class="btn btn-ghost btn-icon"><i data-lucide="mail"></i></button>
+        </div>
+      </div>
+
+      <div class="grid-2-eq" style="margin-bottom: 16px;">
+        <div class="card">
+          <div class="card-h">
+            <div class="card-title">Informations personnelles</div>
+            <button class="icon-btn"><i data-lucide="pencil"></i></button>
+          </div>
+          <div class="info-grid">
+            <div class="info-row"><span class="k">Nom complet</span><span class="v">Thomas Martin</span></div>
+            <div class="info-row"><span class="k">Date de naissance</span><span class="v">14 mars 1992</span></div>
+            <div class="info-row"><span class="k">Email</span><span class="v">thomas.martin@protonmail.com</span></div>
+            <div class="info-row"><span class="k">Téléphone</span><span class="v mono">+33 6 24 81 39 02</span></div>
+            <div class="info-row"><span class="k">Profession</span><span class="v">Ingénieur logiciel</span></div>
+            <div class="info-row"><span class="k">Employeur</span><span class="v">Aether & Co. — CDI</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h">
+            <div class="card-title">Bail en cours</div>
+            <span class="badge-pill badge-success"><span class="dot"></span>Actif</span>
+          </div>
+          <div class="info-grid">
+            <div class="info-row"><span class="k">Type</span><span class="v">Location nue · Résidence principale</span></div>
+            <div class="info-row"><span class="k">Date de début</span><span class="v">1<sup>er</sup> septembre 2023</span></div>
+            <div class="info-row"><span class="k">Durée</span><span class="v">3 ans</span></div>
+            <div class="info-row"><span class="k">Échéance</span><span class="v">31 août 2026</span></div>
+            <div class="info-row"><span class="k">Loyer HC</span><span class="v">550,00 € / mois</span></div>
+            <div class="info-row"><span class="k">Provisions charges</span><span class="v">50,00 € / mois</span></div>
+            <div class="info-row"><span class="k">Dépôt de garantie</span><span class="v">550,00 €</span></div>
+            <div class="info-row"><span class="k">Indice de référence</span><span class="v">IRL T3 2023</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-h">
+          <div class="card-title">Historique des paiements · 12 derniers mois</div>
+          <div style="display:flex; gap: 8px;">
+            <button class="btn btn-ghost btn-sm"><i data-lucide="download"></i> Exporter</button>
+            <button class="btn btn-sm"><i data-lucide="filter"></i> Filtrer</button>
+          </div>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Période</th>
+              <th>Date de paiement</th>
+              <th>Méthode</th>
+              <th class="num" style="text-align:right;">Montant</th>
+              <th>Statut</th>
+              <th>Quittance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mai 2026</td>
+              <td class="num">03 mai 2026</td>
+              <td>Virement</td>
+              <td class="num" style="text-align:right;">600,00 €</td>
+              <td><span class="badge-pill badge-success"><span class="dot"></span>Payé</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td>Avril 2026</td>
+              <td class="num">04 avr. 2026</td>
+              <td>Virement</td>
+              <td class="num" style="text-align:right;">600,00 €</td>
+              <td><span class="badge-pill badge-success"><span class="dot"></span>Payé</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td>Mars 2026</td>
+              <td class="num">03 mars 2026</td>
+              <td>Virement</td>
+              <td class="num" style="text-align:right;">600,00 €</td>
+              <td><span class="badge-pill badge-success"><span class="dot"></span>Payé</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td>Février 2026</td>
+              <td class="num">05 fév. 2026</td>
+              <td>Virement</td>
+              <td class="num" style="text-align:right;">600,00 €</td>
+              <td><span class="badge-pill badge-success"><span class="dot"></span>Payé</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td>Janvier 2026</td>
+              <td class="num">18 jan. 2026</td>
+              <td>Virement</td>
+              <td class="num" style="text-align:right;">600,00 €</td>
+              <td><span class="badge-pill badge-danger"><span class="dot"></span>Retard 13j</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td>Décembre 2025</td>
+              <td class="num">02 déc. 2025</td>
+              <td>Virement</td>
+              <td class="num" style="text-align:right;">600,00 €</td>
+              <td><span class="badge-pill badge-success"><span class="dot"></span>Payé</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td>Novembre 2025</td>
+              <td class="num">03 nov. 2025</td>
+              <td>Virement</td>
+              <td class="num" style="text-align:right;">600,00 €</td>
+              <td><span class="badge-pill badge-success"><span class="dot"></span>Payé</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">Documents associés au bail</div>
+          <button class="btn btn-sm"><i data-lucide="upload"></i> Téléverser</button>
+        </div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-head"><div class="doc-icon"><i data-lucide="file-text"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+            <div class="doc-name">Contrat de bail signé</div>
+            <div class="doc-meta"><span>PDF · 1 sep. 2023</span><span>412 Ko</span></div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-head"><div class="doc-icon green"><i data-lucide="clipboard-check"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+            <div class="doc-name">État des lieux d'entrée</div>
+            <div class="doc-meta"><span>PDF · 1 sep. 2023</span><span>2,1 Mo</span></div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-head"><div class="doc-icon gray"><i data-lucide="clipboard-x"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="plus"></i></button></div></div>
+            <div class="doc-name">État des lieux de sortie</div>
+            <div class="doc-meta"><span style="color:var(--text-4);">À établir</span><span></span></div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-head"><div class="doc-icon amber"><i data-lucide="receipt"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+            <div class="doc-name">Quittances 2026 (7)</div>
+            <div class="doc-meta"><span>Archive · 04 avr. 2026</span><span>1,3 Mo</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ FINANCES ════════ -->
+    <section class="page" id="page-finances" data-screen-label="Finances">
+      <div class="breadcrumb">
+        <a onclick="go('selector')">Mes propriétés</a>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Appartement Brive</span>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Finances</span>
+      </div>
+
+      <header class="page-header">
+        <div class="page-title-block">
+          <div class="crumb">Comptabilité · Exercice 2026</div>
+          <h1>Finances</h1>
+          <div class="sub">Recettes, dépenses et rendement du bien.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn"><i data-lucide="calendar"></i> 2026</button>
+          <button class="btn"><i data-lucide="download"></i> Exporter CSV</button>
+          <button class="btn btn-primary"><i data-lucide="plus"></i> Ajouter une opération</button>
+        </div>
+      </header>
+
+      <div class="kpi-row" style="margin-bottom: 16px;">
+        <div class="kpi-flat is-emerald">
+          <div class="lbl">Solde net annuel</div>
+          <div class="val">+ 4 320 <span style="font-size:14px; color:var(--text-3); font-weight:500;">€</span></div>
+          <div class="foot"><span class="stat-delta"><i data-lucide="arrow-up-right"></i> 7,1 %</span> <span>vs 2025</span></div>
+        </div>
+        <div class="kpi-flat is-emerald">
+          <div class="lbl">Rendement brut</div>
+          <div class="val">4,8 <span style="font-size:14px; color:var(--text-3); font-weight:500;">%</span></div>
+          <div class="foot"><span class="stat-delta"><i data-lucide="arrow-up-right"></i> 0,2 pt</span> <span>sur prix d'achat 138 k€</span></div>
+        </div>
+        <div class="kpi-flat">
+          <div class="lbl">Rendement net</div>
+          <div class="val">3,1 <span style="font-size:14px; color:var(--text-3); font-weight:500;">%</span></div>
+          <div class="foot"><span class="stat-delta down"><i data-lucide="arrow-down-right"></i> 0,1 pt</span> <span>charges en hausse</span></div>
+        </div>
+        <div class="kpi-flat">
+          <div class="lbl">Encaissé YTD</div>
+          <div class="val">3 000 <span style="font-size:14px; color:var(--text-3); font-weight:500;">€</span></div>
+          <div class="foot"><span style="color:var(--text-2);">5 mois sur 12</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-h">
+          <div>
+            <div class="card-title">Recettes vs dépenses — 2026</div>
+            <div style="font-size: 12px; color: var(--text-3); margin-top: 6px;">en euros, par mois</div>
+          </div>
+          <div class="legend">
+            <span class="legend-item"><span class="legend-dot" style="background: var(--primary)"></span> Recettes</span>
+            <span class="legend-item"><span class="legend-dot" style="background: var(--warning)"></span> Dépenses</span>
+          </div>
+        </div>
+        <div class="finance-chart" id="finance-chart"></div>
+        <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; margin-top: 6px;" id="finance-labels"></div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-h">
+          <div class="card-title">Détail mensuel · 2026</div>
+          <button class="btn btn-ghost btn-sm">Voir tout</button>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Mois</th>
+              <th class="num" style="text-align:right;">Loyers perçus</th>
+              <th class="num" style="text-align:right;">Charges</th>
+              <th class="num" style="text-align:right;">Travaux</th>
+              <th class="num" style="text-align:right;">Autres</th>
+              <th class="num" style="text-align:right;">Solde</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Janvier</td><td class="num" style="text-align:right;">600,00 €</td><td class="num" style="text-align:right;">62,00 €</td><td class="num" style="text-align:right;">—</td><td class="num" style="text-align:right;">28,00 €</td><td class="num" style="text-align:right; color: var(--success); font-weight: 600;">+ 510,00 €</td></tr>
+            <tr><td>Février</td><td class="num" style="text-align:right;">600,00 €</td><td class="num" style="text-align:right;">62,00 €</td><td class="num" style="text-align:right;">680,00 €</td><td class="num" style="text-align:right;">—</td><td class="num" style="text-align:right; color: var(--danger); font-weight: 600;">− 142,00 €</td></tr>
+            <tr><td>Mars</td><td class="num" style="text-align:right;">600,00 €</td><td class="num" style="text-align:right;">62,00 €</td><td class="num" style="text-align:right;">—</td><td class="num" style="text-align:right;">—</td><td class="num" style="text-align:right; color: var(--success); font-weight: 600;">+ 538,00 €</td></tr>
+            <tr><td>Avril</td><td class="num" style="text-align:right;">600,00 €</td><td class="num" style="text-align:right;">62,00 €</td><td class="num" style="text-align:right;">400,00 €</td><td class="num" style="text-align:right;">85,00 €</td><td class="num" style="text-align:right; color: var(--success); font-weight: 600;">+ 53,00 €</td></tr>
+            <tr><td>Mai</td><td class="num" style="text-align:right; color: var(--text-3);">— en attente</td><td class="num" style="text-align:right;">62,00 €</td><td class="num" style="text-align:right;">800,00 €</td><td class="num" style="text-align:right;">—</td><td class="num" style="text-align:right; color: var(--text-3); font-weight: 600;">— prévis.</td></tr>
+            <tr style="background: rgba(99,102,241,0.04);">
+              <td style="font-weight: 600;">Total YTD</td>
+              <td class="num" style="text-align:right; font-weight: 600;">3 000,00 €</td>
+              <td class="num" style="text-align:right; font-weight: 600;">310,00 €</td>
+              <td class="num" style="text-align:right; font-weight: 600;">1 880,00 €</td>
+              <td class="num" style="text-align:right; font-weight: 600;">113,00 €</td>
+              <td class="num" style="text-align:right; font-weight: 600; color: var(--primary-2);">+ 697,00 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid-2-eq">
+        <div class="card card-glass">
+          <div class="card-h">
+            <div class="card-title">Fiscalité · revenus fonciers</div>
+            <span class="badge-pill badge-info"><span class="dot"></span>Régime micro-foncier</span>
+          </div>
+          <div class="info-grid">
+            <div class="info-row"><span class="k">Recettes brutes 2025</span><span class="v">7 200,00 €</span></div>
+            <div class="info-row"><span class="k">Abattement 30 %</span><span class="v">− 2 160,00 €</span></div>
+            <div class="info-row"><span class="k">Revenu imposable</span><span class="v">5 040,00 €</span></div>
+            <div class="info-row"><span class="k">Déclaré case</span><span class="v mono">4 BE</span></div>
+          </div>
+          <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-soft); font-size: 12.5px; color: var(--text-2); display: flex; gap: 8px; align-items: center;">
+            <i data-lucide="info" style="width:14px;height:14px; color: var(--primary-2);"></i>
+            Régime adapté tant que recettes &lt; 15 000 € / an
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h">
+            <div class="card-title">Charges déductibles · 2026</div>
+            <span style="font-size: 12px; color: var(--text-3);">prévisionnel</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom: 6px;"><span style="font-size: 13px;">Travaux d'entretien</span><span class="num" style="font-size: 13px; font-weight: 500;">1 880 € / 2 500 €</span></div>
+              <div class="progress"><div style="width: 75%"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom: 6px;"><span style="font-size: 13px;">Taxe foncière</span><span class="num" style="font-size: 13px; font-weight: 500;">720 € / 720 €</span></div>
+              <div class="progress"><div style="width: 100%; background: var(--success);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom: 6px;"><span style="font-size: 13px;">Assurance PNO</span><span class="num" style="font-size: 13px; font-weight: 500;">142 € / 142 €</span></div>
+              <div class="progress"><div style="width: 100%; background: var(--success);"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom: 6px;"><span style="font-size: 13px;">Intérêts d'emprunt</span><span class="num" style="font-size: 13px; font-weight: 500;">1 240 € / 2 980 €</span></div>
+              <div class="progress"><div style="width: 42%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ TRAVAUX ════════ -->
+    <section class="page" id="page-travaux" data-screen-label="Travaux">
+      <div class="breadcrumb">
+        <a onclick="go('selector')">Mes propriétés</a>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Appartement Brive</span>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Travaux</span>
+      </div>
+
+      <header class="page-header">
+        <div class="page-title-block">
+          <div class="crumb">Maintenance · 2026</div>
+          <h1>Travaux & maintenance</h1>
+          <div class="sub">Suivi des interventions sur le bien et budget annuel.</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn"><i data-lucide="users"></i> Carnet prestataires</button>
+          <button class="btn btn-primary"><i data-lucide="plus"></i> Nouvelle intervention</button>
+        </div>
+      </header>
+
+      <div class="grid-2" style="margin-bottom: 16px;">
+        <div class="gauge-card">
+          <div class="card-title">Budget travaux 2026</div>
+          <div class="gauge-stats">
+            <div>
+              <div class="big">1 880<span class="unit"> €</span></div>
+              <div class="of">sur 2 500 € alloués</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 600;">Restant</div>
+              <div style="font-size: 20px; font-weight: 600; color: var(--success); font-feature-settings: 'tnum' 1;">620 €</div>
+            </div>
+          </div>
+          <div class="progress" style="height: 8px;"><div style="width: 75%"></div></div>
+          <div class="gauge-foot">
+            <span><span class="badge-pill badge-success" style="font-size: 10.5px;"><span class="dot"></span>680 € engagé</span></span>
+            <span><span class="badge-pill badge-warning" style="font-size: 10.5px;"><span class="dot"></span>1 200 € en cours</span></span>
+            <span style="font-size: 11.5px;">75 % consommé</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="kpi-flat"><div class="lbl">Interventions</div><div class="val">3</div><div class="foot">1 terminée · 1 en cours · 1 prévue</div></div>
+          <div class="kpi-flat"><div class="lbl">Prestataires</div><div class="val">3</div><div class="foot">Plomberie · peinture · ventilation</div></div>
+          <div class="kpi-flat"><div class="lbl">Délai moyen</div><div class="val">8<span style="font-size:14px;color:var(--text-3);font-weight:500;">j</span></div><div class="foot">De la demande à la fin</div></div>
+          <div class="kpi-flat"><div class="lbl">Coût moyen</div><div class="val">710<span style="font-size:14px;color:var(--text-3);font-weight:500;">€</span></div><div class="foot">Par intervention 2026</div></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-h">
+          <div class="card-title">Interventions · 2026</div>
+          <div class="chips" style="margin: 0; gap: 4px;">
+            <button class="chip active">Toutes <span class="count">3</span></button>
+            <button class="chip">Terminé <span class="count">1</span></button>
+            <button class="chip">En cours <span class="count">1</span></button>
+            <button class="chip">Prévu <span class="count">1</span></button>
+          </div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-icon" style="background: var(--success-soft); color: var(--success);"><i data-lucide="droplet"></i></div>
+          <div>
+            <div class="work-title">Remplacement chauffe-eau électrique</div>
+            <div class="work-meta">
+              <span>Plomberie Lacroix</span><span>·</span>
+              <span>Terminé le 12 février 2026</span><span>·</span>
+              <span>Plomberie</span>
+            </div>
+          </div>
+          <span class="badge-pill badge-success"><span class="dot"></span>Terminé</span>
+          <div class="work-cost">680 €<span class="est">facturé</span></div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-icon" style="background: var(--warning-soft); color: var(--warning);"><i data-lucide="paintbrush"></i></div>
+          <div>
+            <div class="work-title">Peinture du salon et entrée</div>
+            <div class="work-meta">
+              <span>Atelier Roussel</span><span>·</span>
+              <span>Démarré le 28 avril · fin prévue 20 juin</span><span>·</span>
+              <span>Décoration</span>
+            </div>
+          </div>
+          <span class="badge-pill badge-warning"><span class="dot"></span>En cours</span>
+          <div class="work-cost">1 200 €<span class="est">estimé</span></div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-icon" style="background: var(--primary-soft); color: var(--primary-2);"><i data-lucide="wind"></i></div>
+          <div>
+            <div class="work-title">Révision VMC simple flux</div>
+            <div class="work-meta">
+              <span>ClimEntretien 19</span><span>·</span>
+              <span>À planifier · août 2026</span><span>·</span>
+              <span>Ventilation</span>
+            </div>
+          </div>
+          <span class="badge-pill badge-info"><span class="dot"></span>Prévu</span>
+          <div class="work-cost">250 €<span class="est">estimé</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">Timeline · 2026</div>
+          <div class="legend">
+            <span class="legend-item"><span class="legend-dot" style="background: linear-gradient(90deg, #10b981, #059669);"></span> Terminé</span>
+            <span class="legend-item"><span class="legend-dot" style="background: linear-gradient(90deg, #f59e0b, #d97706);"></span> En cours</span>
+            <span class="legend-item"><span class="legend-dot" style="background: linear-gradient(90deg, rgba(99,102,241,0.7), rgba(139,92,246,0.7));"></span> Prévu</span>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="tl-month"><div class="lbl">Jan</div></div>
+          <div class="tl-month">
+            <div class="tl-bar done" style="left: 30%; right: -20%;">Chauffe-eau · 680€</div>
+            <div class="lbl">Fév</div>
+          </div>
+          <div class="tl-month"><div class="lbl">Mar</div></div>
+          <div class="tl-month">
+            <div class="tl-bar progress" style="left: 70%; right: -160%;">Peinture salon · 1 200€</div>
+            <div class="lbl">Avr</div>
+          </div>
+          <div class="tl-month current"><div class="lbl">Mai</div></div>
+          <div class="tl-month"><div class="lbl">Juin</div></div>
+          <div class="tl-month"><div class="lbl">Juil</div></div>
+          <div class="tl-month">
+            <div class="tl-bar planned" style="left: 15%; right: -90%;" data-comment-anchor="667fe69b18-div">VMC · 250€</div>
+            <div class="lbl">Aoû</div>
+          </div>
+          <div class="tl-month"><div class="lbl">Sep</div></div>
+          <div class="tl-month"><div class="lbl">Oct</div></div>
+          <div class="tl-month"><div class="lbl">Nov</div></div>
+          <div class="tl-month"><div class="lbl">Déc</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ DOCUMENTS ════════ -->
+    <section class="page" id="page-documents" data-screen-label="Documents">
+      <div class="breadcrumb">
+        <a onclick="go('selector')">Mes propriétés</a>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Appartement Brive</span>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Documents</span>
+      </div>
+
+      <header class="page-header">
+        <div class="page-title-block">
+          <div class="crumb">Bibliothèque · 24 documents</div>
+          <h1>Documents</h1>
+          <div class="sub">Tous les documents liés à votre bien.</div>
+        </div>
+        <div class="page-actions">
+          <div class="search">
+            <i data-lucide="search"></i>
+            <input placeholder="Rechercher un document…" />
+          </div>
+          <button class="btn btn-primary"><i data-lucide="upload"></i> Téléverser</button>
+        </div>
+      </header>
+
+      <div class="chips">
+        <button class="chip active">Tous <span class="count">24</span></button>
+        <button class="chip">Bail & avenants <span class="count">3</span></button>
+        <button class="chip">États des lieux <span class="count">2</span></button>
+        <button class="chip">Quittances <span class="count">11</span></button>
+        <button class="chip">Assurances <span class="count">3</span></button>
+        <button class="chip">Travaux <span class="count">4</span></button>
+        <button class="chip">Fiscalité <span class="count">1</span></button>
+      </div>
+
+      <div class="section-title" style="margin-top: 8px;">Récents</div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon amber"><i data-lucide="receipt"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></div></div>
+          <div class="doc-name">Quittance — Avril 2026</div>
+          <div class="doc-meta"><span>PDF · 04 avr. 2026</span><span>88 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon" style="background: var(--warning-soft); color: var(--warning);"><i data-lucide="paintbrush"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></div></div>
+          <div class="doc-name">Devis peinture salon — Roussel</div>
+          <div class="doc-meta"><span>PDF · 22 avr. 2026</span><span>340 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon green"><i data-lucide="shield-check"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></div></div>
+          <div class="doc-name">Attestation PNO 2026</div>
+          <div class="doc-meta"><span>PDF · 02 jan. 2026</span><span>120 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon"><i data-lucide="file-text"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></div></div>
+          <div class="doc-name">Avis taxe foncière 2025</div>
+          <div class="doc-meta"><span>PDF · 14 oct. 2025</span><span>410 Ko</span></div>
+        </div>
+      </div>
+
+      <div class="section-title">Bail & contrats</div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon"><i data-lucide="file-signature"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Contrat de bail — T. Martin</div>
+          <div class="doc-meta"><span>PDF · 01 sep. 2023</span><span>412 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon green"><i data-lucide="clipboard-check"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">État des lieux d'entrée</div>
+          <div class="doc-meta"><span>PDF · 01 sep. 2023</span><span>2,1 Mo</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon gray"><i data-lucide="file-plus-2"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="plus"></i></button></div></div>
+          <div class="doc-name" style="color: var(--text-3);">Acte de cautionnement</div>
+          <div class="doc-meta"><span style="color:var(--text-4);">À téléverser</span><span></span></div>
+        </div>
+      </div>
+
+      <div class="section-title">Quittances 2026</div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon amber"><i data-lucide="receipt"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Quittance — Janvier 2026</div>
+          <div class="doc-meta"><span>PDF · 18 jan. 2026</span><span>86 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon amber"><i data-lucide="receipt"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Quittance — Février 2026</div>
+          <div class="doc-meta"><span>PDF · 05 fév. 2026</span><span>86 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon amber"><i data-lucide="receipt"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Quittance — Mars 2026</div>
+          <div class="doc-meta"><span>PDF · 03 mars 2026</span><span>87 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon amber"><i data-lucide="receipt"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Quittance — Avril 2026</div>
+          <div class="doc-meta"><span>PDF · 04 avr. 2026</span><span>88 Ko</span></div>
+        </div>
+      </div>
+
+      <div class="section-title">Travaux</div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon" style="background: var(--success-soft); color: var(--success);"><i data-lucide="droplet"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Facture Plomberie Lacroix</div>
+          <div class="doc-meta"><span>PDF · 12 fév. 2026</span><span>220 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon" style="background: var(--warning-soft); color: var(--warning);"><i data-lucide="paintbrush"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Devis peinture salon</div>
+          <div class="doc-meta"><span>PDF · 22 avr. 2026</span><span>340 Ko</span></div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-head"><div class="doc-icon"><i data-lucide="image"></i></div><div class="doc-actions"><button class="icon-btn"><i data-lucide="download"></i></button></div></div>
+          <div class="doc-name">Photos avant travaux salon</div>
+          <div class="doc-meta"><span>ZIP · 25 avr. 2026</span><span>8,4 Mo</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ GESTION DES ACCÈS ════════ -->
+    <section class="page" id="page-acces" data-screen-label="Accès">
+      <div class="breadcrumb">
+        <a onclick="go('selector')">Mes propriétés</a>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Appartement Brive</span>
+        <i data-lucide="chevron-right"></i>
+        <span class="cur">Gestion des accès</span>
+      </div>
+
+      <header class="page-header">
+        <div class="page-title-block">
+          <div class="crumb">Collaboration · Appartement Brive</div>
+          <h1>Gestion des accès</h1>
+          <div class="sub">Invitez votre comptable, votre notaire ou un co-propriétaire à consulter ou gérer ce bien.</div>
+        </div>
+        <div class="page-actions">
+          <span style="font-size: 12.5px; color: var(--text-3);">3 membres · 1 invitation en attente</span>
+        </div>
+      </header>
+
+      <!-- Members list -->
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-h">
+          <div class="card-title">Membres ayant accès</div>
+          <span style="font-size: 12px; color: var(--text-3);">3 personnes</span>
+        </div>
+
+        <!-- Owner -->
+        <div class="member-row">
+          <div class="avatar sm">RR</div>
+          <div class="nm-block">
+            <div class="nm">Rowin Raffaillac <span class="badge-pill badge-info"><span class="dot"></span>Vous</span></div>
+            <div class="em">rowin@example.com</div>
+          </div>
+          <span class="role-pill owner"><i data-lucide="crown"></i> Propriétaire</span>
+          <div class="added">Depuis le 1<sup>er</sup> sept. 2023</div>
+          <button class="icon-btn" disabled style="opacity:0.4; cursor:not-allowed;" title="Le propriétaire principal ne peut pas être retiré"><i data-lucide="lock"></i></button>
+        </div>
+
+        <!-- Manager -->
+        <div class="member-row">
+          <div class="avatar sm alt">SD</div>
+          <div class="nm-block">
+            <div class="nm">Sophie Durand</div>
+            <div class="em">sophie.d@example.com</div>
+          </div>
+          <span class="role-pill manager"><i data-lucide="shield"></i> Gestionnaire</span>
+          <div class="added">Depuis le 14 mars 2024</div>
+          <button class="icon-btn" title="Retirer l'accès"><i data-lucide="user-minus"></i></button>
+        </div>
+
+        <!-- Viewer -->
+        <div class="member-row">
+          <div class="avatar sm alt2">MR</div>
+          <div class="nm-block">
+            <div class="nm">Marc Raffaillac</div>
+            <div class="em">marc.r@example.com</div>
+          </div>
+          <span class="role-pill viewer"><i data-lucide="eye"></i> Lecture seule</span>
+          <div class="added">Depuis le 02 oct. 2024</div>
+          <button class="icon-btn" title="Retirer l'accès"><i data-lucide="user-minus"></i></button>
+        </div>
+      </div>
+
+      <!-- Invite form -->
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-h">
+          <div class="card-title">Inviter un collaborateur</div>
+        </div>
+        <form class="invite-form" onsubmit="event.preventDefault();">
+          <div class="field" style="gap:6px;">
+            <label>Adresse email</label>
+            <input class="input" type="email" placeholder="email@exemple.com" />
+          </div>
+          <div class="field" style="gap:6px;">
+            <label>Rôle</label>
+            <select class="select">
+              <option>Gestionnaire</option>
+              <option>Lecture seule</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary"><i data-lucide="send"></i> Envoyer l'invitation</button>
+        </form>
+
+        <div class="section-title" style="margin: 22px 0 10px; font-size: 10.5px;">Invitations en attente</div>
+
+        <div class="pending-row">
+          <div class="ico"><i data-lucide="mail"></i></div>
+          <div class="em">
+            notaire@cabinet-xyz.fr
+            <div class="sub">Invité comme <strong style="color:var(--text-2); font-weight:500;">Lecture seule</strong> · envoyée il y a 2 jours</div>
+          </div>
+          <span class="badge-pill badge-warning"><span class="dot"></span>En attente</span>
+          <button class="btn btn-ghost btn-sm" style="margin-left: 8px;"><i data-lucide="refresh-cw"></i> Renvoyer</button>
+          <button class="btn btn-ghost btn-sm" style="color: var(--danger);"><i data-lucide="x"></i> Annuler</button>
+        </div>
+      </div>
+
+      <!-- Role explanation -->
+      <div class="card card-glass">
+        <div class="card-h">
+          <div class="card-title">Comprendre les rôles</div>
+          <i data-lucide="info" style="width: 14px; height: 14px; color: var(--text-3);"></i>
+        </div>
+        <div class="role-explain">
+          <div class="it">
+            <div class="hd">
+              <span class="role-pill owner"><i data-lucide="crown"></i> Propriétaire</span>
+            </div>
+            <div class="desc">Accès complet, y compris la gestion des collaborateurs et la suppression du bien. Un seul propriétaire par bien.</div>
+          </div>
+          <div class="it">
+            <div class="hd">
+              <span class="role-pill manager"><i data-lucide="shield"></i> Gestionnaire</span>
+            </div>
+            <div class="desc">Peut consulter et modifier toutes les données (loyers, travaux, documents) mais ne peut pas supprimer le bien ni gérer les autres accès.</div>
+          </div>
+          <div class="it">
+            <div class="hd">
+              <span class="role-pill viewer"><i data-lucide="eye"></i> Lecture seule</span>
+            </div>
+            <div class="desc">Peut consulter toutes les informations du bien sans pouvoir les modifier. Idéal pour un comptable ou un notaire.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+</div>
+
+<script>
+  // ─── Lucide ───
+  function refreshIcons() { if (window.lucide) lucide.createIcons(); }
+  refreshIcons();
+
+  // ─── View router ───
+  const views = ['landing','auth','selector','app'];
+  function go(view) {
+    views.forEach(v => {
+      document.getElementById('view-' + v).classList.toggle('active', v === view);
+    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (view === 'app') {
+      // ensure dashboard is active by default
+      const active = document.querySelector('#view-app .page.active');
+      if (!active) goPage('dashboard');
+    }
+    setTimeout(refreshIcons, 50);
+  }
+
+  // ─── Auth mode toggle ───
+  function setAuthMode(mode) {
+    const isLogin = mode === 'login';
+    document.getElementById('form-login').style.display = isLogin ? '' : 'none';
+    document.getElementById('form-register').style.display = isLogin ? 'none' : '';
+    document.querySelectorAll('.auth-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.mode === mode);
+    });
+    setTimeout(refreshIcons, 50);
+  }
+
+  function simulateLogin() {
+    go('selector');
+  }
+
+  // ─── Open a property → enter app shell ───
+  function openProperty(id) {
+    go('app');
+    goPage('dashboard');
+  }
+
+  // ─── App sidebar nav ───
+  function goPage(name) {
+    document.querySelectorAll('#view-app .nav-item').forEach(n => {
+      n.classList.toggle('active', n.dataset.page === name);
+    });
+    document.querySelectorAll('#view-app .page').forEach(p => {
+      p.classList.toggle('active', p.id === 'page-' + name);
+    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setTimeout(refreshIcons, 50);
+  }
+  document.querySelectorAll('#view-app .nav-item[data-page]').forEach(item => {
+    item.addEventListener('click', () => goPage(item.dataset.page));
+  });
+
+  // ─── User menu close on outside click ───
+  document.addEventListener('click', (e) => {
+    const m = document.getElementById('user-menu');
+    if (m && !m.contains(e.target)) m.classList.remove('open');
+  });
+
+  // ─── Finance chart ───
+  const months = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
+  const incomes  = [600, 600, 600, 600, 600, 0,   0,   0,   0,   0,   0,   0  ];
+  const expenses = [90,  742, 62,  547, 862, 0,   0,   0,   0,   0,   0,   0  ];
+  const max = Math.max(...incomes, ...expenses);
+
+  function buildFinanceChart() {
+    const chart = document.getElementById('finance-chart');
+    const labels = document.getElementById('finance-labels');
+    if (!chart || chart.dataset.built) return;
+    months.forEach((m, i) => {
+      const col = document.createElement('div');
+      col.className = 'fc-col';
+      const ih = incomes[i]  ? Math.max(2, (incomes[i] /max)*100) : 0;
+      const eh = expenses[i] ? Math.max(2, (expenses[i]/max)*100) : 0;
+      col.innerHTML =
+        '<div class="fc-pair">' +
+          '<div class="fc-bar income"  style="height:' + ih + '%; ' + (incomes[i]===0 ? 'opacity:.15;' : '') + '" title="' + incomes[i] + ' €"></div>' +
+          '<div class="fc-bar expense" style="height:' + eh + '%; ' + (expenses[i]===0 ? 'opacity:.15;' : '') + '" title="' + expenses[i] + ' €"></div>' +
+        '</div>';
+      chart.appendChild(col);
+      const lbl = document.createElement('div');
+      lbl.className = 'fc-lbl';
+      lbl.style.textAlign = 'center';
+      lbl.textContent = m;
+      labels.appendChild(lbl);
+    });
+    chart.dataset.built = '1';
+  }
+  buildFinanceChart();
+</script>
+</body>
+</html>
