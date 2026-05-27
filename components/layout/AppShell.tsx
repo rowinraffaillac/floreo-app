@@ -9,7 +9,7 @@ import {
 import type { Property } from '@/lib/types'
 
 const NAV_ITEMS = [
-  { href: '',             label: 'Vue générale',  icon: LayoutDashboard },
+  { href: '',             label: 'Tableau de bord', icon: LayoutDashboard },
   { href: '/locataire',   label: 'Locataire',     icon: UserRound },
   { href: '/finances',    label: 'Finances',      icon: TrendingUp,    soon: true },
   { href: '/travaux',     label: 'Travaux',       icon: Wrench,        soon: true },

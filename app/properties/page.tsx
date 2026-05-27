@@ -51,31 +51,30 @@ export default async function PropertiesPage() {
           Mes biens
         </span>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 36,
-            height: 36,
-            borderRadius: '50%',
-            background: 'var(--navy)',
-            color: 'var(--champagne)',
-            display: 'grid',
-            placeItems: 'center',
-            fontFamily: 'var(--font-sora), sans-serif',
-            fontSize: 13,
-            fontWeight: 600,
-            letterSpacing: '0.04em',
-          }}>
-            {initials}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 0,
+          background: 'var(--ivory)', border: '1px solid var(--bd-light)',
+          borderRadius: 999, overflow: 'hidden',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px 5px 5px' }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: '50%',
+              background: 'var(--navy)', color: 'var(--champagne)',
+              display: 'grid', placeItems: 'center',
+              fontFamily: 'var(--font-sora), sans-serif', fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.04em', flexShrink: 0,
+            }}>
+              {initials}
+            </div>
+            <span style={{ fontSize: 13, color: 'var(--ink-2)', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {user.email}
+            </span>
           </div>
+          <div style={{ width: 1, height: 20, background: 'var(--bd-light)', flexShrink: 0 }} />
           <form action="/auth/signout" method="post">
             <button style={{
-              fontSize: 13,
-              color: 'var(--ink-3)',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              transition: 'color 0.18s ease',
+              padding: '6px 14px', fontSize: 13, color: 'var(--ink-3)',
+              background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
             }}>
               Déconnexion
             </button>
