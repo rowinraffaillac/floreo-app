@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+const LoyriaMark = () => (
+  <svg width={18} height={24} viewBox="0 0 60 80" aria-hidden="true">
+    <path d="M8,8 L24,8 L24,52 L52,52 L52,68 L8,68 Z" fill="#D8C28A" />
+    <path d="M52,8 L52,40 L40,40 L40,24 L20,24 L20,8 Z" fill="#D8C28A" />
+  </svg>
+)
+
 export default function RegisterPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -35,12 +42,22 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <div className="text-5xl mb-4">📬</div>
-          <h1 className="text-xl font-semibold text-white mb-2">Vérifiez votre email</h1>
-          <p className="text-gray-400 text-sm">
-            Un lien de confirmation a été envoyé à <strong className="text-white">{email}</strong>.
+      <div style={{
+        minHeight: '100vh',
+        background: 'var(--navy)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px 16px',
+      }}>
+        <div style={{ textAlign: 'center', maxWidth: 400 }}>
+          <div style={{ fontSize: 44, marginBottom: 18 }}>📬</div>
+          <h1 style={{ margin: '0 0 10px', fontFamily: 'var(--font-sora), sans-serif', fontSize: 20, fontWeight: 600, color: 'var(--cream)' }}>
+            Vérifiez votre email
+          </h1>
+          <p style={{ margin: 0, fontSize: 13.5, color: 'var(--cream-3)', lineHeight: 1.6 }}>
+            Un lien de confirmation a été envoyé à{' '}
+            <strong style={{ color: 'var(--cream)' }}>{email}</strong>.
             Cliquez dessus pour activer votre compte.
           </p>
         </div>
@@ -49,68 +66,116 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-6">
-            <svg width="36" height="36" viewBox="0 0 28 28">
-              <rect width="28" height="28" rx="4" fill="#1a2744"/>
-              <rect x="5" y="5" width="3" height="12" fill="#C9A84C"/>
-              <rect x="5" y="14" width="10" height="3" fill="#C9A84C"/>
-              <rect x="20" y="9" width="3" height="14" fill="#C9A84C"/>
-              <rect x="13" y="9" width="10" height="3" fill="#C9A84C"/>
-            </svg>
-            <span className="text-2xl font-bold text-white tracking-wide">
-              <span className="text-[#C9A84C]">L</span>OYRIA
+    <div style={{
+      minHeight: '100vh',
+      background: 'var(--navy)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '24px 16px',
+    }}>
+      <div style={{ width: '100%', maxWidth: 400 }}>
+        {/* Brand */}
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <LoyriaMark />
+            <span style={{
+              fontFamily: 'var(--font-sora), sans-serif',
+              fontWeight: 600,
+              fontSize: 16,
+              letterSpacing: '0.14em',
+              color: 'var(--cream)',
+            }}>
+              LOYRIA
             </span>
           </div>
-          <h1 className="text-xl font-semibold text-white">Créer un compte</h1>
-          <p className="text-gray-400 text-sm mt-1">Commencez gratuitement, sans carte bancaire</p>
+          <h1 style={{ margin: '0 0 6px', fontFamily: 'var(--font-sora), sans-serif', fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--cream)' }}>
+            Créer un compte
+          </h1>
+          <p style={{ margin: 0, fontSize: 13.5, color: 'var(--cream-3)' }}>
+            Commencez gratuitement, sans carte bancaire
+          </p>
         </div>
 
-        <form onSubmit={handleRegister} className="bg-[#13131a] border border-white/10 rounded-2xl p-8 space-y-5">
+        {/* Card */}
+        <form
+          onSubmit={handleRegister}
+          style={{
+            background: 'rgba(247,243,234,0.04)',
+            border: '1px solid rgba(247,243,234,0.10)',
+            borderRadius: 18,
+            padding: '32px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 18,
+          }}
+        >
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm">
+            <div style={{
+              background: 'var(--danger-bg)',
+              border: '1px solid var(--danger-line)',
+              borderRadius: 8,
+              padding: '10px 14px',
+              fontSize: 13,
+              color: 'var(--danger)',
+            }}>
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Email</label>
+            <label style={{ display: 'block', fontSize: 12.5, color: 'var(--cream-3)', marginBottom: 8, fontWeight: 500 }}>
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full bg-[#1a1a2e] border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#6366f1] transition-colors"
               placeholder="vous@exemple.com"
+              style={inputStyle}
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-400 mb-2">Mot de passe</label>
+            <label style={{ display: 'block', fontSize: 12.5, color: 'var(--cream-3)', marginBottom: 8, fontWeight: 500 }}>
+              Mot de passe
+            </label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full bg-[#1a1a2e] border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#6366f1] transition-colors"
               placeholder="8 caractères minimum"
+              style={inputStyle}
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#6366f1] hover:bg-[#5558e0] disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-colors"
+            style={{
+              width: '100%',
+              background: loading ? 'rgba(216,194,138,0.5)' : 'linear-gradient(180deg, var(--champagne-3) 0%, var(--champagne) 50%, var(--champagne-2) 100%)',
+              color: 'var(--navy)',
+              border: '1px solid var(--champagne-2)',
+              boxShadow: loading ? 'none' : 'var(--shadow-cta)',
+              fontWeight: 600,
+              fontSize: 14,
+              padding: '11px 0',
+              borderRadius: 10,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontFamily: 'inherit',
+              transition: 'all 0.18s ease',
+            }}
           >
             {loading ? 'Création...' : 'Créer mon compte'}
           </button>
 
-          <p className="text-center text-sm text-gray-500">
+          <p style={{ margin: 0, textAlign: 'center', fontSize: 13, color: 'var(--cream-4)' }}>
             Déjà un compte ?{' '}
-            <Link href="/login" className="text-[#6366f1] hover:underline">
+            <Link href="/login" style={{ color: 'var(--champagne)', textDecoration: 'none', fontWeight: 500 }}>
               Se connecter
             </Link>
           </p>
@@ -118,4 +183,18 @@ export default function RegisterPage() {
       </div>
     </div>
   )
+}
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  background: 'rgba(247,243,234,0.06)',
+  border: '1px solid rgba(247,243,234,0.12)',
+  borderRadius: 8,
+  padding: '10px 14px',
+  color: 'var(--cream)',
+  fontSize: 14,
+  fontFamily: 'inherit',
+  outline: 'none',
+  boxSizing: 'border-box',
+  transition: 'border-color 0.18s ease',
 }

@@ -63,12 +63,21 @@ export const PROPERTY_STATUS_LABELS: Record<PropertyStatus, string> = {
 }
 
 export const PROPERTY_STATUS_COLORS: Record<PropertyStatus, string> = {
-  loue: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-  vacant: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-  en_travaux: 'bg-orange-500/15 text-orange-400 border-orange-500/20',
-  en_recherche: 'bg-blue-500/15 text-blue-400 border-blue-500/20',
-  vendu: 'bg-gray-500/15 text-gray-400 border-gray-500/20',
-  archive: 'bg-gray-500/10 text-gray-500 border-gray-500/10',
+  loue:         'border',
+  vacant:       'border',
+  en_travaux:   'border',
+  en_recherche: 'border',
+  vendu:        'border',
+  archive:      'border',
+}
+
+export const PROPERTY_STATUS_PILL: Record<PropertyStatus, { bg: string; color: string; border: string; dot: string }> = {
+  loue:         { bg: 'rgba(46,139,87,0.10)',    color: '#2E8B57', border: 'rgba(46,139,87,0.25)',    dot: '#2E8B57' },
+  vacant:       { bg: 'rgba(201,150,51,0.12)',   color: '#C99633', border: 'rgba(201,150,51,0.30)',   dot: '#C99633' },
+  en_travaux:   { bg: 'rgba(44,110,143,0.10)',   color: '#2C6E8F', border: 'rgba(44,110,143,0.20)',   dot: '#2C6E8F' },
+  en_recherche: { bg: 'rgba(201,150,51,0.12)',   color: '#C99633', border: 'rgba(201,150,51,0.30)',   dot: '#C99633' },
+  vendu:        { bg: 'rgba(10,30,46,0.05)',     color: '#6b7c8a', border: 'rgba(10,30,46,0.10)',     dot: '#6b7c8a' },
+  archive:      { bg: 'rgba(10,30,46,0.03)',     color: '#97a3ad', border: 'rgba(10,30,46,0.06)',     dot: '#97a3ad' },
 }
 
 export const TAX_REGIME_LABELS: Record<TaxRegime, string> = {

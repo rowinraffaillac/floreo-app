@@ -7,23 +7,26 @@ export default async function EditPropertyPage({ params }: { params: Promise<{ i
   const property = await getProperty(id)
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
-      <header className="border-b border-white/8 px-6 py-4 flex items-center gap-4">
-        <Link href="/properties" className="text-gray-500 hover:text-white transition-colors text-sm">
-          ← Mes biens
-        </Link>
-        <span className="text-white/20">/</span>
-        <Link href={`/properties/${id}`} className="text-gray-500 hover:text-white transition-colors text-sm">
-          {property.name}
-        </Link>
-        <span className="text-white/20">/</span>
-        <span className="text-sm text-white">Modifier</span>
-      </header>
-
-      <div className="max-w-2xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-bold text-white mb-8">Modifier le bien</h1>
-        <PropertyForm property={property} />
+    <div style={{ padding: '28px 36px 60px' }}>
+      {/* Breadcrumb */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, marginBottom: 28, color: 'var(--ink-3)' }}>
+        <Link href="/properties" style={{ color: 'var(--ink-2)', textDecoration: 'none' }}>Mes biens</Link>
+        <span>›</span>
+        <Link href={`/properties/${id}`} style={{ color: 'var(--ink-2)', textDecoration: 'none' }}>{property.name}</Link>
+        <span>›</span>
+        <span style={{ color: 'var(--ink)', fontWeight: 500 }}>Modifier</span>
       </div>
+
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: 'var(--ink-3)', fontWeight: 600, marginBottom: 10 }}>
+          Modification
+        </div>
+        <h1 style={{ margin: 0, fontFamily: 'var(--font-sora), sans-serif', fontSize: 28, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--navy)' }}>
+          {property.name}
+        </h1>
+      </div>
+
+      <PropertyForm property={property} />
     </div>
   )
 }

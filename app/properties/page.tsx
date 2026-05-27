@@ -2,7 +2,11 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getProperties } from '@/lib/actions/properties'
-import PropertyCard from '@/components/properties/PropertyCard'
+import { PROPERTY_STATUS_LABELS, PROPERTY_STATUS_PILL, PROPERTY_TYPE_LABELS } from '@/lib/types'
+import type { Property } from '@/lib/types'
+
+const fmt = (n: number | null) =>
+  n != null ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n) : null
 
 export default async function PropertiesPage() {
   const supabase = await createClient()
@@ -11,71 +15,383 @@ export default async function PropertiesPage() {
 
   const properties = await getProperties()
 
+  const initials = (user.email ?? 'U').slice(0, 2).toUpperCase()
+
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Header */}
-      <header className="border-b border-white/8 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <svg width="24" height="24" viewBox="0 0 28 28">
-            <rect width="28" height="28" rx="4" fill="#1a2744"/>
-            <rect x="5" y="5" width="3" height="12" fill="#C9A84C"/>
-            <rect x="5" y="14" width="10" height="3" fill="#C9A84C"/>
-            <rect x="20" y="9" width="3" height="14" fill="#C9A84C"/>
-            <rect x="13" y="9" width="10" height="3" fill="#C9A84C"/>
+    <div style={{ minHeight: '100vh', background: 'var(--ivory)' }}>
+      {/* Topbar */}
+      <header style={{
+        background: 'var(--white)',
+        borderBottom: '1px solid var(--bd-light)',
+        padding: '16px 32px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        position: 'sticky',
+        top: 0,
+        zIndex: 20,
+      }}>
+        <Link href="/properties" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+          <svg width={Math.round(24 * 0.75)} height={24} viewBox="0 0 60 80">
+            <path d="M8,8 L24,8 L24,52 L52,52 L52,68 L8,68 Z" fill="#0A1E2E" />
+            <path d="M52,8 L52,40 L40,40 L40,24 L20,24 L20,8 Z" fill="#0A1E2E" />
           </svg>
-          <span className="font-bold tracking-wide">
-            <span className="text-[#C9A84C]">L</span>OYRIA
+          <span style={{
+            fontFamily: 'var(--font-sora), sans-serif',
+            fontWeight: 600,
+            fontSize: 14,
+            letterSpacing: '0.12em',
+            color: 'var(--navy)',
+          }}>
+            LOYRIA
           </span>
+        </Link>
+
+        <span style={{ fontFamily: 'var(--font-sora), sans-serif', fontSize: 14, fontWeight: 500, color: 'var(--ink-2)' }}>
+          Mes biens
+        </span>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            background: 'var(--navy)',
+            color: 'var(--champagne)',
+            display: 'grid',
+            placeItems: 'center',
+            fontFamily: 'var(--font-sora), sans-serif',
+            fontSize: 13,
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+          }}>
+            {initials}
+          </div>
+          <form action="/auth/signout" method="post">
+            <button style={{
+              fontSize: 13,
+              color: 'var(--ink-3)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              transition: 'color 0.18s ease',
+            }}>
+              Déconnexion
+            </button>
+          </form>
         </div>
-        <form action="/auth/signout" method="post">
-          <button className="text-sm text-gray-500 hover:text-white transition-colors">
-            Déconnexion
-          </button>
-        </form>
       </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        {/* Titre + CTA */}
-        <div className="flex items-center justify-between mb-8">
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 32px 80px' }}>
+        {/* Page header */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 32, flexWrap: 'wrap' }}>
           <div>
-            <h1 className="text-2xl font-bold text-white">Mes biens</h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <div style={{ fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: 'var(--ink-3)', fontWeight: 600, marginBottom: 10 }}>
+              Espace personnel
+            </div>
+            <h1 style={{ margin: 0, fontFamily: 'var(--font-sora), sans-serif', fontSize: 32, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--navy)' }}>
+              Mes biens
+            </h1>
+            <p style={{ margin: '8px 0 0', color: 'var(--ink-2)', fontSize: 14.5 }}>
               {properties.length === 0
-                ? 'Aucun bien ajouté pour l\'instant'
-                : `${properties.length} bien${properties.length > 1 ? 's' : ''}`}
+                ? 'Ajoutez votre premier bien pour commencer.'
+                : `${properties.length} bien${properties.length > 1 ? 's' : ''} dans votre patrimoine.`}
             </p>
           </div>
-          <Link
-            href="/properties/new"
-            className="bg-[#C9A84C] hover:bg-[#b8963e] text-[#0a0a0f] font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-          >
-            + Ajouter un bien
-          </Link>
-        </div>
-
-        {/* Liste */}
-        {properties.length === 0 ? (
-          <div className="bg-[#13131a] border border-white/8 rounded-xl p-12 text-center">
-            <div className="text-4xl mb-4">🏠</div>
-            <h2 className="text-lg font-semibold text-white mb-2">Ajoutez votre premier bien</h2>
-            <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
-              Centralisez la gestion de vos appartements, maisons et locaux dans un seul endroit.
-            </p>
+          <div style={{ display: 'flex', gap: 10 }}>
             <Link
               href="/properties/new"
-              className="inline-block bg-[#C9A84C] hover:bg-[#b8963e] text-[#0a0a0f] font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                background: 'linear-gradient(180deg, var(--champagne-3) 0%, var(--champagne) 50%, var(--champagne-2) 100%)',
+                color: 'var(--navy)',
+                border: '1px solid var(--champagne-2)',
+                boxShadow: 'var(--shadow-cta)',
+                fontWeight: 600,
+                fontSize: 13.5,
+                padding: '9px 16px',
+                borderRadius: 'var(--r-md)',
+                textDecoration: 'none',
+                transition: 'all 0.18s ease',
+              }}
             >
-              Ajouter un bien
+              + Ajouter un bien
             </Link>
           </div>
+        </div>
+
+        {/* Grid */}
+        {properties.length === 0 ? (
+          <EmptyState />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 18 }}>
             {properties.map(property => (
               <PropertyCard key={property.id} property={property} />
             ))}
+            <AddCard />
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function StatusPill({ status }: { status: Property['status'] }) {
+  const pill = PROPERTY_STATUS_PILL[status]
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 6,
+      padding: '3px 9px',
+      borderRadius: 999,
+      fontSize: 11.5,
+      fontWeight: 500,
+      whiteSpace: 'nowrap',
+      background: pill.bg,
+      color: pill.color,
+      border: `1px solid ${pill.border}`,
+    }}>
+      <span style={{ width: 5, height: 5, borderRadius: '50%', background: pill.dot, flexShrink: 0 }} />
+      {PROPERTY_STATUS_LABELS[status]}
+    </span>
+  )
+}
+
+function PropertyCard({ property }: { property: Property }) {
+  return (
+    <Link href={`/properties/${property.id}`} style={{ display: 'flex', textDecoration: 'none' }}>
+      <div style={{
+        display: 'flex',
+        width: '100%',
+        background: 'var(--white)',
+        border: '1px solid var(--bd-light-2)',
+        borderRadius: 22,
+        overflow: 'hidden',
+        boxShadow: 'var(--shadow-1)',
+        transition: 'all 0.22s ease',
+        cursor: 'pointer',
+      }}
+      onMouseEnter={e => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.transform = 'translateY(-2px)'
+        el.style.borderColor = 'var(--bd-light-hi)'
+        el.style.boxShadow = 'var(--shadow-3)'
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.transform = ''
+        el.style.borderColor = 'var(--bd-light-2)'
+        el.style.boxShadow = 'var(--shadow-1)'
+      }}
+      >
+        {/* Thumbnail */}
+        <div style={{
+          width: 140,
+          flexShrink: 0,
+          background: 'linear-gradient(135deg, var(--navy) 0%, var(--petrol) 100%)',
+          position: 'relative',
+          display: 'grid',
+          placeItems: 'center',
+          overflow: 'hidden',
+        }}>
+          {/* Grid pattern */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'linear-gradient(rgba(216,194,138,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(216,194,138,0.06) 1px, transparent 1px)',
+            backgroundSize: '18px 18px',
+          }} />
+          <div style={{
+            width: 56,
+            height: 56,
+            borderRadius: 14,
+            background: 'rgba(216,194,138,0.10)',
+            border: '1px solid rgba(216,194,138,0.20)',
+            display: 'grid',
+            placeItems: 'center',
+            color: 'var(--champagne)',
+            position: 'relative',
+            zIndex: 1,
+          }}>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: '22px 24px', display: 'flex', flexDirection: 'column', gap: 14, flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+            <div>
+              <div style={{ fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: 'var(--ink-3)', fontWeight: 600 }}>
+                {property.address}
+              </div>
+              <h3 style={{ margin: '4px 0 2px', fontFamily: 'var(--font-sora), sans-serif', fontSize: 19, fontWeight: 600, letterSpacing: '-0.015em', color: 'var(--navy)' }}>
+                {property.name}
+              </h3>
+              <div style={{ color: 'var(--ink-2)', fontSize: 13.5 }}>
+                {property.city}{property.postal_code ? ` · ${property.postal_code}` : ''}
+              </div>
+            </div>
+            <StatusPill status={property.status} />
+          </div>
+
+          {/* Meta */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 14,
+            padding: '10px 0',
+            borderTop: '1px solid var(--bd-light-2)',
+            borderBottom: '1px solid var(--bd-light-2)',
+            color: 'var(--ink-2)',
+            fontSize: 12.5,
+          }}>
+            {property.type && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                {PROPERTY_TYPE_LABELS[property.type]}
+              </span>
+            )}
+            {property.surface && (
+              <>
+                <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--ink-5)', flexShrink: 0 }} />
+                <span>{property.surface} m²</span>
+              </>
+            )}
+            {property.rooms_count && (
+              <>
+                <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--ink-5)', flexShrink: 0 }} />
+                <span>{property.rooms_count} pièce{property.rooms_count > 1 ? 's' : ''}</span>
+              </>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div>
+              {property.purchase_price ? (
+                <>
+                  <div style={{ fontFamily: 'var(--font-mono), monospace', fontSize: 18, fontWeight: 600, color: 'var(--navy)', letterSpacing: '-0.015em' }}>
+                    {fmt(property.purchase_price)}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--ink-3)' }}>Prix d'acquisition</div>
+                </>
+              ) : (
+                <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>Prix non renseigné</div>
+              )}
+            </div>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              background: 'var(--navy)',
+              color: 'var(--cream)',
+              border: 'none',
+              borderRadius: 'var(--r-md)',
+              fontSize: 13,
+              fontWeight: 500,
+              padding: '7px 14px',
+            }}>
+              Gérer →
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function AddCard() {
+  return (
+    <Link href="/properties/new" style={{ display: 'block', textDecoration: 'none' }}>
+      <div style={{
+        background: 'transparent',
+        border: '2px dashed var(--bd-light-hi)',
+        borderRadius: 22,
+        minHeight: 160,
+        display: 'grid',
+        placeItems: 'center',
+        cursor: 'pointer',
+        transition: 'all 0.22s ease',
+        color: 'var(--ink-3)',
+        textAlign: 'center',
+      }}
+      onMouseEnter={e => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.borderColor = 'var(--champagne)'
+        el.style.background = 'rgba(216,194,138,0.04)'
+        el.style.color = 'var(--navy)'
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget as HTMLDivElement
+        el.style.borderColor = 'var(--bd-light-hi)'
+        el.style.background = 'transparent'
+        el.style.color = 'var(--ink-3)'
+      }}
+      >
+        <div>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            background: 'var(--ivory)',
+            border: '1px solid var(--bd-light)',
+            display: 'grid',
+            placeItems: 'center',
+            margin: '0 auto 14px',
+          }}>
+            <span style={{ fontSize: 22 }}>+</span>
+          </div>
+          <h4 style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 500 }}>Ajouter un bien</h4>
+          <p style={{ margin: 0, fontSize: 12.5 }}>Maison, appartement, studio…</p>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function EmptyState() {
+  return (
+    <div style={{
+      background: 'var(--white)',
+      border: '1px solid var(--bd-light-2)',
+      borderRadius: 22,
+      padding: '60px 40px',
+      textAlign: 'center',
+      maxWidth: 480,
+      margin: '0 auto',
+      boxShadow: 'var(--shadow-1)',
+    }}>
+      <div style={{ fontSize: 36, marginBottom: 16 }}>🏠</div>
+      <h2 style={{ margin: '0 0 8px', fontFamily: 'var(--font-sora), sans-serif', fontSize: 20, color: 'var(--navy)' }}>
+        Ajoutez votre premier bien
+      </h2>
+      <p style={{ margin: '0 0 24px', color: 'var(--ink-2)', fontSize: 14 }}>
+        Centralisez la gestion de vos appartements, maisons et locaux dans un seul outil.
+      </p>
+      <Link
+        href="/properties/new"
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 8,
+          background: 'linear-gradient(180deg, var(--champagne-3) 0%, var(--champagne) 50%, var(--champagne-2) 100%)',
+          color: 'var(--navy)',
+          border: '1px solid var(--champagne-2)',
+          boxShadow: 'var(--shadow-cta)',
+          fontWeight: 600,
+          fontSize: 14,
+          padding: '11px 22px',
+          borderRadius: 12,
+          textDecoration: 'none',
+        }}
+      >
+        Ajouter un bien
+      </Link>
     </div>
   )
 }

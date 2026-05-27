@@ -2,16 +2,35 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import {
+  LayoutDashboard, UserRound, TrendingUp, Wrench,
+  FolderOpen, CalendarClock, Landmark, Users, ArrowLeft, Building2,
+} from 'lucide-react'
 import type { Property } from '@/lib/types'
 
 const NAV_ITEMS = [
-  { href: '', label: 'Vue générale', icon: '◈' },
-  { href: '/locataire', label: 'Locataire', icon: '◉' },
-  { href: '/finances', label: 'Finances', icon: '◈', soon: true },
-  { href: '/travaux', label: 'Travaux', icon: '◈', soon: true },
-  { href: '/documents', label: 'Documents', icon: '◈', soon: true },
-  { href: '/acces', label: 'Accès', icon: '◈', soon: true },
+  { href: '',             label: 'Vue générale',  icon: LayoutDashboard },
+  { href: '/locataire',   label: 'Locataire',     icon: UserRound },
+  { href: '/finances',    label: 'Finances',      icon: TrendingUp,    soon: true },
+  { href: '/travaux',     label: 'Travaux',       icon: Wrench,        soon: true },
+  { href: '/documents',   label: 'Documents',     icon: FolderOpen,    soon: true },
+  { href: '/echeances',   label: 'Échéances',     icon: CalendarClock, soon: true },
+  { href: '/fiscalite',   label: 'Fiscalité',     icon: Landmark,      soon: true },
+  { href: '/acces',       label: 'Accès',         icon: Users,         soon: true },
 ]
+
+const LoyriaMark = ({ size = 22 }: { size?: number }) => (
+  <svg
+    width={Math.round(size * 0.75)}
+    height={size}
+    viewBox="0 0 60 80"
+    aria-hidden="true"
+    style={{ flexShrink: 0 }}
+  >
+    <path d="M8,8 L24,8 L24,52 L52,52 L52,68 L8,68 Z" fill="#D8C28A" />
+    <path d="M52,8 L52,40 L40,40 L40,24 L20,24 L20,8 Z" fill="#D8C28A" />
+  </svg>
+)
 
 interface AppShellProps {
   property: Property
@@ -23,39 +42,86 @@ export default function AppShell({ property, children }: AppShellProps) {
   const base = `/properties/${property.id}`
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex">
+    <div
+      className="flex"
+      style={{ minHeight: '100vh', background: 'var(--ivory)' }}
+    >
       {/* Sidebar */}
-      <aside className="w-56 shrink-0 bg-[#0d0d15] border-r border-white/8 flex flex-col">
-        {/* Logo + retour */}
-        <div className="px-4 py-5 border-b border-white/8">
-          <Link href="/properties" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm mb-4">
-            <span>←</span>
-            <span>Mes biens</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <svg width="22" height="22" viewBox="0 0 28 28" className="shrink-0">
-              <rect width="28" height="28" rx="4" fill="#1a2744"/>
-              <rect x="5" y="5" width="3" height="12" fill="#C9A84C"/>
-              <rect x="5" y="14" width="10" height="3" fill="#C9A84C"/>
-              <rect x="20" y="9" width="3" height="14" fill="#C9A84C"/>
-              <rect x="13" y="9" width="10" height="3" fill="#C9A84C"/>
-            </svg>
-            <span className="text-sm font-bold tracking-wide text-white">
-              <span className="text-[#C9A84C]">L</span>OYRIA
-            </span>
-          </div>
+      <aside
+        style={{
+          width: 232,
+          flexShrink: 0,
+          background: 'var(--navy)',
+          padding: '22px 14px 16px',
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          color: 'var(--cream)',
+          overflowY: 'auto',
+        }}
+      >
+        {/* Brand */}
+        <div style={{ padding: '4px 10px 18px', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <LoyriaMark size={24} />
+          <span style={{
+            fontFamily: 'var(--font-sora), sans-serif',
+            fontWeight: 600,
+            fontSize: 14,
+            letterSpacing: '0.12em',
+            color: 'var(--cream)',
+          }}>
+            LOYRIA
+          </span>
         </div>
 
-        {/* Nom du bien */}
-        <div className="px-4 py-3 border-b border-white/8">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Bien actif</p>
-          <p className="text-sm font-medium text-white truncate">{property.name}</p>
-          <p className="text-xs text-gray-500 truncate">{property.city}</p>
+        {/* Back link */}
+        <Link
+          href="/properties"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            padding: '9px 12px',
+            marginBottom: 14,
+            borderRadius: 'var(--r-md)',
+            background: 'rgba(247,243,234,0.04)',
+            border: '1px solid var(--bd-dark)',
+            color: 'var(--cream-2)',
+            fontSize: 12.5,
+            transition: 'all 0.18s ease',
+            textDecoration: 'none',
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(247,243,234,0.07)'
+            ;(e.currentTarget as HTMLAnchorElement).style.color = 'var(--cream)'
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(247,243,234,0.04)'
+            ;(e.currentTarget as HTMLAnchorElement).style.color = 'var(--cream-2)'
+          }}
+        >
+          <ArrowLeft size={13} />
+          <span>Mes biens</span>
+        </Link>
+
+        {/* Section label */}
+        <div style={{
+          fontSize: 10,
+          textTransform: 'uppercase',
+          letterSpacing: '0.14em',
+          color: 'var(--cream-4)',
+          padding: '0 12px 8px',
+          fontWeight: 600,
+        }}>
+          {property.name}
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-2 py-3 space-y-0.5">
+        {/* Nav */}
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           {NAV_ITEMS.map(item => {
+            const Icon = item.icon
             const href = `${base}${item.href}`
             const isActive = item.href === ''
               ? pathname === base
@@ -65,17 +131,54 @@ export default function AppShell({ property, children }: AppShellProps) {
               <Link
                 key={item.href}
                 href={item.soon ? '#' : href}
-                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
-                  ${isActive
-                    ? 'bg-[#C9A84C]/10 text-[#C9A84C]'
-                    : item.soon
-                      ? 'text-gray-600 cursor-not-allowed'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 11,
+                  padding: '9px 12px',
+                  borderRadius: 'var(--r-md)',
+                  color: isActive ? 'var(--champagne)' : item.soon ? 'var(--cream-4)' : 'var(--cream-2)',
+                  fontSize: 13.5,
+                  fontWeight: 500,
+                  position: 'relative',
+                  transition: 'all 0.18s ease',
+                  background: isActive ? 'rgba(216,194,138,0.12)' : 'transparent',
+                  cursor: item.soon ? 'default' : 'pointer',
+                  letterSpacing: '0.005em',
+                  textDecoration: 'none',
+                  border: 'none',
+                }}
               >
+                {isActive && (
+                  <span style={{
+                    position: 'absolute',
+                    left: -14,
+                    top: 8,
+                    bottom: 8,
+                    width: 2,
+                    background: 'var(--champagne)',
+                    borderRadius: '0 2px 2px 0',
+                  }} />
+                )}
+                <Icon
+                  size={16}
+                  style={{
+                    color: isActive ? 'var(--champagne)' : item.soon ? 'var(--cream-4)' : 'var(--cream-3)',
+                    flexShrink: 0,
+                    strokeWidth: 1.7,
+                  }}
+                />
                 <span>{item.label}</span>
                 {item.soon && (
-                  <span className="text-[10px] bg-white/5 text-gray-600 px-1.5 py-0.5 rounded">
+                  <span style={{
+                    marginLeft: 'auto',
+                    fontSize: 10,
+                    background: 'rgba(247,243,234,0.08)',
+                    color: 'var(--cream-4)',
+                    padding: '2px 6px',
+                    borderRadius: 6,
+                    fontWeight: 500,
+                  }}>
                     bientôt
                   </span>
                 )}
@@ -84,10 +187,61 @@ export default function AppShell({ property, children }: AppShellProps) {
           })}
         </nav>
 
-        {/* Déconnexion */}
-        <div className="px-2 py-3 border-t border-white/8">
+        {/* Sidebar footer */}
+        <div style={{ marginTop: 'auto', paddingTop: 16 }}>
+          {/* Property mini card */}
+          <div style={{
+            background: 'rgba(247,243,234,0.04)',
+            border: '1px solid var(--bd-dark)',
+            borderRadius: 'var(--r-lg)',
+            padding: 10,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            marginBottom: 8,
+          }}>
+            <div style={{
+              width: 30,
+              height: 30,
+              borderRadius: 7,
+              background: 'rgba(216,194,138,0.12)',
+              border: '1px solid rgba(216,194,138,0.20)',
+              display: 'grid',
+              placeItems: 'center',
+              color: 'var(--champagne)',
+              flexShrink: 0,
+            }}>
+              <Building2 size={14} strokeWidth={1.7} />
+            </div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--cream)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {property.name}
+              </div>
+              <div style={{ fontSize: 10.5, color: 'var(--cream-3)', marginTop: 2 }}>
+                {property.city}{property.surface ? ` · ${property.surface} m²` : ''}
+              </div>
+            </div>
+          </div>
+
+          {/* Logout */}
           <form action="/auth/signout" method="post">
-            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-white/5">
+            <button
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 12px',
+                fontSize: 12.5,
+                color: 'var(--cream-4)',
+                background: 'transparent',
+                border: 'none',
+                borderRadius: 'var(--r-md)',
+                cursor: 'pointer',
+                transition: 'all 0.18s ease',
+                fontFamily: 'inherit',
+              }}
+            >
               <span>⎋</span>
               <span>Déconnexion</span>
             </button>
@@ -95,8 +249,8 @@ export default function AppShell({ property, children }: AppShellProps) {
         </div>
       </aside>
 
-      {/* Contenu principal */}
-      <main className="flex-1 overflow-auto">
+      {/* Main content */}
+      <main style={{ flex: 1, overflow: 'auto', background: 'var(--ivory)' }}>
         {children}
       </main>
     </div>

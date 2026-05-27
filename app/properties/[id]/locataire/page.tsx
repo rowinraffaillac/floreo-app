@@ -21,18 +21,43 @@ export default async function LocatairePage({ params }: { params: Promise<{ id: 
 
   if (!lease || !tenant) {
     return (
-      <div className="px-8 py-8">
-        <h1 className="text-xl font-bold text-white mb-2">Locataire</h1>
-        <p className="text-sm text-gray-500 mb-8">Aucun locataire actif sur ce bien.</p>
-        <div className="bg-[#13131a] border border-white/8 rounded-xl p-10 text-center max-w-sm">
-          <div className="text-3xl mb-3">👤</div>
-          <h2 className="text-base font-semibold text-white mb-2">Ajouter un locataire</h2>
-          <p className="text-sm text-gray-500 mb-5">
+      <div style={{ padding: '28px 36px 60px' }}>
+        <div style={{ fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: 'var(--ink-3)', fontWeight: 600, marginBottom: 10 }}>
+          Locataire
+        </div>
+        <h1 style={{ margin: '0 0 24px', fontFamily: 'var(--font-sora), sans-serif', fontSize: 28, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--navy)' }}>
+          Aucun locataire actif
+        </h1>
+        <div style={{
+          background: 'var(--white)',
+          border: '1px solid var(--bd-light-2)',
+          borderRadius: 'var(--r-xl)',
+          padding: '48px 40px',
+          textAlign: 'center',
+          maxWidth: 400,
+          boxShadow: 'var(--shadow-1)',
+        }}>
+          <div style={{ fontSize: 32, marginBottom: 14 }}>👤</div>
+          <h2 style={{ margin: '0 0 8px', fontFamily: 'var(--font-sora), sans-serif', fontSize: 17, fontWeight: 600, color: 'var(--navy)' }}>
+            Ajouter un locataire
+          </h2>
+          <p style={{ margin: '0 0 22px', fontSize: 13.5, color: 'var(--ink-3)', lineHeight: 1.6 }}>
             Créez le dossier locataire et le bail en une seule étape.
           </p>
           <Link
             href={`/properties/${propertyId}/locataire/new`}
-            className="inline-block bg-[#C9A84C] hover:bg-[#b8963e] text-[#0a0a0f] font-semibold px-5 py-2 rounded-lg text-sm transition-colors"
+            style={{
+              display: 'inline-flex', alignItems: 'center',
+              background: 'linear-gradient(180deg, var(--champagne-3) 0%, var(--champagne) 50%, var(--champagne-2) 100%)',
+              color: 'var(--navy)',
+              border: '1px solid var(--champagne-2)',
+              boxShadow: 'var(--shadow-cta)',
+              fontWeight: 600,
+              fontSize: 13.5,
+              padding: '9px 18px',
+              borderRadius: 'var(--r-md)',
+              textDecoration: 'none',
+            }}
           >
             Ajouter un locataire
           </Link>
@@ -46,17 +71,26 @@ export default async function LocatairePage({ params }: { params: Promise<{ id: 
   const revisionDays = daysUntil(lease.next_revision_date)
 
   return (
-    <div className="px-8 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div style={{ padding: '28px 36px 60px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 28, flexWrap: 'wrap' }}>
         <div>
-          <h1 className="text-xl font-bold text-white">
+          <div style={{ fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: 'var(--ink-3)', fontWeight: 600, marginBottom: 8 }}>
+            Locataire actif
+          </div>
+          <h1 style={{ margin: 0, fontFamily: 'var(--font-sora), sans-serif', fontSize: 28, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--navy)' }}>
             {tenant.first_name} {tenant.last_name}
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Locataire actif</p>
         </div>
         <Link
           href={`/properties/${propertyId}/locataire/edit`}
-          className="text-sm border border-white/10 hover:border-white/20 text-gray-400 hover:text-white px-3 py-1.5 rounded-lg transition-colors"
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            fontSize: 13.5, fontWeight: 500, padding: '9px 16px',
+            borderRadius: 'var(--r-md)', border: '1px solid var(--bd-light)',
+            background: 'var(--white)', color: 'var(--ink)', textDecoration: 'none',
+            transition: 'all 0.18s ease',
+          }}
         >
           Modifier
         </Link>
@@ -64,102 +98,104 @@ export default async function LocatairePage({ params }: { params: Promise<{ id: 
 
       {/* Alertes */}
       {(insuranceDays !== null && insuranceDays <= 60) && (
-        <div className="mb-6 bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3 text-sm text-amber-400">
+        <div style={{
+          marginBottom: 20,
+          background: 'var(--warning-bg)',
+          border: '1px solid var(--warning-line)',
+          borderRadius: 'var(--r-md)',
+          padding: '11px 16px',
+          fontSize: 13.5,
+          color: 'var(--warning)',
+        }}>
           {insuranceDays <= 0
             ? 'Assurance habitation expirée — demander le renouvellement'
             : `Assurance habitation expire dans ${insuranceDays} jour${insuranceDays > 1 ? 's' : ''}`}
         </div>
       )}
       {(revisionDays !== null && revisionDays <= 30 && revisionDays > 0) && (
-        <div className="mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg px-4 py-3 text-sm text-blue-400">
+        <div style={{
+          marginBottom: 20,
+          background: 'var(--info-bg)',
+          border: '1px solid rgba(44,110,143,0.20)',
+          borderRadius: 'var(--r-md)',
+          padding: '11px 16px',
+          fontSize: 13.5,
+          color: 'var(--info)',
+        }}>
           Révision de loyer prévue dans {revisionDays} jour{revisionDays > 1 ? 's' : ''}
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Cards grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         {/* Infos locataire */}
-        <div className="bg-[#13131a] border border-white/8 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-white mb-4">Informations</h2>
-          <dl className="space-y-2.5">
-            <Row label="Email" value={tenant.email} />
-            <Row label="Téléphone" value={tenant.phone} />
-            <Row label="Profession" value={tenant.profession} />
-            <Row label="Revenus déclarés" value={fmt(tenant.declared_income) ? `${fmt(tenant.declared_income)} / mois` : null} />
-            <Row label="Dépôt de garantie" value={fmt(tenant.deposit_amount)} />
-          </dl>
-        </div>
+        <Card title="Informations">
+          <Row label="Email" value={tenant.email} />
+          <Row label="Téléphone" value={tenant.phone} />
+          <Row label="Profession" value={tenant.profession} />
+          <Row label="Revenus déclarés" value={fmt(tenant.declared_income) ? `${fmt(tenant.declared_income)} / mois` : null} />
+          <Row label="Dépôt de garantie" value={fmt(tenant.deposit_amount)} />
+        </Card>
 
         {/* Assurance */}
-        <div className="bg-[#13131a] border border-white/8 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-white mb-4">Assurance habitation</h2>
-          <dl className="space-y-2.5">
-            <Row label="Compagnie" value={tenant.insurance_company} />
-            <Row label="Numéro de police" value={tenant.insurance_policy_number} />
-            <Row
-              label="Expiration"
-              value={fmtDate(tenant.insurance_expiry_date)}
-              warning={insuranceDays !== null && insuranceDays <= 60}
-            />
-          </dl>
+        <Card title="Assurance habitation">
+          <Row label="Compagnie" value={tenant.insurance_company} />
+          <Row label="N° de police" value={tenant.insurance_policy_number} />
+          <Row
+            label="Expiration"
+            value={fmtDate(tenant.insurance_expiry_date)}
+            warning={insuranceDays !== null && insuranceDays <= 60}
+          />
           {!tenant.insurance_company && (
-            <p className="text-xs text-amber-500/70 mt-3">Assurance non renseignée</p>
+            <p style={{ margin: '8px 0 0', fontSize: 12, color: 'var(--warning)' }}>Assurance non renseignée</p>
           )}
-        </div>
+        </Card>
 
         {/* Bail */}
-        <div className="bg-[#13131a] border border-white/8 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-white mb-4">Bail</h2>
-          <dl className="space-y-2.5">
-            <Row label="Type" value={LEASE_TYPE_LABELS[lease.type]} />
-            <Row label="Entrée" value={fmtDate(lease.start_date)} />
-            <Row label="Fin prévue" value={fmtDate(lease.end_date)} />
-            {leaseDays !== null && leaseDays > 0 && (
-              <Row label="Reste" value={`${leaseDays} jour${leaseDays > 1 ? 's' : ''}`} />
-            )}
-            <Row label="Renouvellement auto" value={lease.auto_renewal ? 'Oui' : 'Non'} />
-          </dl>
-        </div>
+        <Card title="Bail">
+          <Row label="Type" value={LEASE_TYPE_LABELS[lease.type]} />
+          <Row label="Entrée" value={fmtDate(lease.start_date)} />
+          <Row label="Fin prévue" value={fmtDate(lease.end_date)} />
+          {leaseDays !== null && leaseDays > 0 && (
+            <Row label="Reste" value={`${leaseDays} jour${leaseDays > 1 ? 's' : ''}`} />
+          )}
+          <Row label="Renouvellement auto" value={lease.auto_renewal ? 'Oui' : 'Non'} />
+        </Card>
 
         {/* Loyer */}
-        <div className="bg-[#13131a] border border-white/8 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-white mb-4">Loyer</h2>
-          <dl className="space-y-2.5">
-            <Row label="Loyer HC" value={fmt(lease.rent_amount) ? `${fmt(lease.rent_amount)} / mois` : null} />
-            <Row label="Charges" value={lease.charges_amount > 0 ? `${fmt(lease.charges_amount)} / mois` : '0 €'} />
-            <Row
-              label="Total CC"
-              value={`${fmt(lease.total_rent)} / mois`}
-              highlight
-            />
-            <Row label="Dépôt de garantie" value={fmt(lease.deposit_amount)} />
-            <Row label="Jour d'exigibilité" value={`Le ${lease.payment_day} du mois`} />
-            <Row label="Indexation" value={lease.index_clause ? REFERENCE_INDEX_LABELS[lease.reference_index] : 'Non'} />
-            <Row label="Prochaine révision" value={fmtDate(lease.next_revision_date)} warning={revisionDays !== null && revisionDays <= 30} />
-          </dl>
-        </div>
+        <Card title="Loyer">
+          <Row label="Loyer HC" value={fmt(lease.rent_amount) ? `${fmt(lease.rent_amount)} / mois` : null} />
+          <Row label="Charges" value={lease.charges_amount > 0 ? `${fmt(lease.charges_amount)} / mois` : '0 €'} />
+          <Row label="Total CC" value={`${fmt(lease.total_rent)} / mois`} highlight />
+          <Row label="Dépôt de garantie" value={fmt(lease.deposit_amount)} />
+          <Row label="Jour d'exigibilité" value={`Le ${lease.payment_day} du mois`} />
+          <Row label="Indexation" value={lease.index_clause ? REFERENCE_INDEX_LABELS[lease.reference_index] : 'Non'} />
+          <Row label="Prochaine révision" value={fmtDate(lease.next_revision_date)} warning={revisionDays !== null && revisionDays <= 30} />
+        </Card>
       </div>
 
       {/* Notes */}
       {tenant.notes && (
-        <div className="mt-6 bg-[#13131a] border border-white/8 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-white mb-3">Notes</h2>
-          <p className="text-sm text-gray-400 whitespace-pre-wrap">{tenant.notes}</p>
+        <div style={{ marginTop: 16 }}>
+          <Card title="Notes">
+            <p style={{ margin: 0, fontSize: 14, color: 'var(--ink-2)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+              {tenant.notes}
+            </p>
+          </Card>
         </div>
       )}
 
       {/* Clôturer le bail */}
-      <div className="mt-8 pt-6 border-t border-white/5">
+      <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--bd-light-2)' }}>
         <form action={async () => {
           'use server'
           await terminateLease(lease.id, tenant.id, propertyId)
         }}>
           <button
             type="submit"
-            className="text-xs text-gray-600 hover:text-red-400 transition-colors"
-            onClick={(e) => {
-              if (!confirm('Clôturer le bail ? Le locataire passera en statut "sorti" et le bien redeviendra vacant.')) {
-                e.preventDefault()
-              }
+            style={{
+              fontSize: 12, color: 'var(--ink-4)', background: 'transparent', border: 'none',
+              cursor: 'pointer', fontFamily: 'inherit', transition: 'color 0.18s ease',
             }}
           >
             Clôturer le bail
@@ -170,14 +206,38 @@ export default async function LocatairePage({ params }: { params: Promise<{ id: 
   )
 }
 
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{
+      background: 'var(--white)',
+      border: '1px solid var(--bd-light-2)',
+      borderRadius: 'var(--r-xl)',
+      padding: '22px 24px',
+      boxShadow: 'var(--shadow-1)',
+    }}>
+      <div style={{ fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: 'var(--ink-3)', fontWeight: 600, marginBottom: 16 }}>
+        {title}
+      </div>
+      <dl style={{ margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {children}
+      </dl>
+    </div>
+  )
+}
+
 function Row({ label, value, highlight, warning }: {
   label: string; value: string | null; highlight?: boolean; warning?: boolean
 }) {
   if (!value) return null
   return (
-    <div className="flex items-center justify-between text-sm">
-      <dt className="text-gray-500">{label}</dt>
-      <dd className={`font-medium ${highlight ? 'text-[#C9A84C]' : warning ? 'text-amber-400' : 'text-white'}`}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13.5 }}>
+      <dt style={{ color: 'var(--ink-3)' }}>{label}</dt>
+      <dd style={{
+        margin: 0,
+        fontWeight: 500,
+        color: highlight ? 'var(--champagne-2)' : warning ? 'var(--warning)' : 'var(--ink)',
+        fontFamily: typeof value === 'string' && /[\d€]/.test(value) ? 'var(--font-mono), monospace' : 'inherit',
+      }}>
         {value}
       </dd>
     </div>

@@ -49,255 +49,166 @@ export default function PropertyForm({ property }: PropertyFormProps) {
   const p = property
 
   return (
-    <form action={formAction} className="space-y-8 max-w-2xl">
+    <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: 32, maxWidth: 640 }}>
       {p && <input type="hidden" name="id" value={p.id} />}
 
       {state?.error && (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-red-400 text-sm">
+        <div style={{
+          background: 'var(--danger-bg)',
+          border: '1px solid var(--danger-line)',
+          borderRadius: 10,
+          padding: '11px 16px',
+          fontSize: 13.5,
+          color: 'var(--danger)',
+        }}>
           {state.error}
         </div>
       )}
 
       {/* Informations générales */}
-      <section>
-        <h2 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-          Informations générales
-        </h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm text-gray-400 mb-1.5">Nom du bien <span className="text-red-400">*</span></label>
-            <input
-              name="name"
-              defaultValue={p?.name ?? ''}
-              required
-              placeholder="ex: Appartement Lyon Part-Dieu"
-              className={inputCls}
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-400 mb-1.5">Adresse <span className="text-red-400">*</span></label>
-            <input
-              name="address"
-              defaultValue={p?.address ?? ''}
-              required
-              placeholder="ex: 12 rue de la République"
-              className={inputCls}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Ville <span className="text-red-400">*</span></label>
-              <input
-                name="city"
-                defaultValue={p?.city ?? ''}
-                required
-                placeholder="Lyon"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Code postal <span className="text-red-400">*</span></label>
-              <input
-                name="postal_code"
-                defaultValue={p?.postal_code ?? ''}
-                required
-                placeholder="69001"
-                className={inputCls}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Type</label>
-              <select name="type" defaultValue={p?.type ?? 'appartement'} className={inputCls}>
-                {TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Statut</label>
-              <select name="status" defaultValue={p?.status ?? 'vacant'} className={inputCls}>
-                {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-              </select>
-            </div>
-          </div>
+      <Section title="Informations générales">
+        <Field label="Nom du bien" required>
+          <input name="name" defaultValue={p?.name ?? ''} required placeholder="ex: Appartement Lyon Part-Dieu" style={inp} />
+        </Field>
+        <Field label="Adresse" required>
+          <input name="address" defaultValue={p?.address ?? ''} required placeholder="ex: 12 rue de la République" style={inp} />
+        </Field>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Ville" required>
+            <input name="city" defaultValue={p?.city ?? ''} required placeholder="Lyon" style={inp} />
+          </Field>
+          <Field label="Code postal" required>
+            <input name="postal_code" defaultValue={p?.postal_code ?? ''} required placeholder="69001" style={inp} />
+          </Field>
         </div>
-      </section>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Type">
+            <select name="type" defaultValue={p?.type ?? 'appartement'} style={inp}>
+              {TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </Field>
+          <Field label="Statut">
+            <select name="status" defaultValue={p?.status ?? 'vacant'} style={inp}>
+              {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+            </select>
+          </Field>
+        </div>
+      </Section>
 
       {/* Caractéristiques */}
-      <section>
-        <h2 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-          Caractéristiques
-        </h2>
-        <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Surface (m²)</label>
-              <input
-                name="surface"
-                type="number"
-                step="0.01"
-                min="0"
-                defaultValue={p?.surface ?? ''}
-                placeholder="58"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Pièces</label>
-              <input
-                name="rooms_count"
-                type="number"
-                min="0"
-                defaultValue={p?.rooms_count ?? ''}
-                placeholder="3"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Chambres</label>
-              <input
-                name="bedrooms_count"
-                type="number"
-                min="0"
-                defaultValue={p?.bedrooms_count ?? ''}
-                placeholder="2"
-                className={inputCls}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Étage</label>
-              <input
-                name="floor"
-                type="number"
-                min="0"
-                defaultValue={p?.floor ?? ''}
-                placeholder="2"
-                className={inputCls}
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                name="has_elevator"
-                defaultChecked={p?.has_elevator ?? false}
-                className="w-4 h-4 accent-[#C9A84C]"
-              />
-              <span className="text-sm text-gray-400">Ascenseur</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                name="is_furnished"
-                defaultChecked={p?.is_furnished ?? false}
-                className="w-4 h-4 accent-[#C9A84C]"
-              />
-              <span className="text-sm text-gray-400">Meublé</span>
-            </label>
-          </div>
+      <Section title="Caractéristiques">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+          <Field label="Surface (m²)">
+            <input name="surface" type="number" step="0.01" min="0" defaultValue={p?.surface ?? ''} placeholder="58" style={inp} />
+          </Field>
+          <Field label="Pièces">
+            <input name="rooms_count" type="number" min="0" defaultValue={p?.rooms_count ?? ''} placeholder="3" style={inp} />
+          </Field>
+          <Field label="Chambres">
+            <input name="bedrooms_count" type="number" min="0" defaultValue={p?.bedrooms_count ?? ''} placeholder="2" style={inp} />
+          </Field>
         </div>
-      </section>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Étage">
+            <input name="floor" type="number" min="0" defaultValue={p?.floor ?? ''} placeholder="2" style={inp} />
+          </Field>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, color: 'var(--ink-2)' }}>
+            <input type="checkbox" name="has_elevator" defaultChecked={p?.has_elevator ?? false} style={{ accentColor: 'var(--champagne-2)', width: 15, height: 15 }} />
+            Ascenseur
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13.5, color: 'var(--ink-2)' }}>
+            <input type="checkbox" name="is_furnished" defaultChecked={p?.is_furnished ?? false} style={{ accentColor: 'var(--champagne-2)', width: 15, height: 15 }} />
+            Meublé
+          </label>
+        </div>
+      </Section>
 
       {/* Informations patrimoniales */}
-      <section>
-        <h2 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-          Informations patrimoniales
-        </h2>
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Date d'acquisition</label>
-              <input
-                name="purchase_date"
-                type="date"
-                defaultValue={p?.purchase_date ?? ''}
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Prix d'achat (€)</label>
-              <input
-                name="purchase_price"
-                type="number"
-                min="0"
-                defaultValue={p?.purchase_price ?? ''}
-                placeholder="150 000"
-                className={inputCls}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Frais de notaire (€)</label>
-              <input name="notary_fees" type="number" min="0" defaultValue={p?.notary_fees ?? ''} placeholder="10 000" className={inputCls} />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Frais d'agence (€)</label>
-              <input name="agency_fees" type="number" min="0" defaultValue={p?.agency_fees ?? ''} placeholder="5 000" className={inputCls} />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Travaux initiaux (€)</label>
-              <input name="initial_works_cost" type="number" min="0" defaultValue={p?.initial_works_cost ?? ''} placeholder="15 000" className={inputCls} />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Valeur estimée actuelle (€)</label>
-              <input name="estimated_value" type="number" min="0" defaultValue={p?.estimated_value ?? ''} placeholder="180 000" className={inputCls} />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Taxe foncière annuelle (€)</label>
-              <input name="property_tax" type="number" min="0" defaultValue={p?.property_tax ?? ''} placeholder="800" className={inputCls} />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Charges copropriété / mois (€)</label>
-              <input name="condo_charges" type="number" min="0" defaultValue={p?.condo_charges ?? ''} placeholder="120" className={inputCls} />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Régime fiscal</label>
-              <select name="tax_regime" defaultValue={p?.tax_regime ?? 'micro_foncier'} className={inputCls}>
-                {TAX_REGIMES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Mode de détention</label>
-              <select name="ownership_type" defaultValue={p?.ownership_type ?? 'nom_propre'} className={inputCls}>
-                {OWNERSHIP_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-              </select>
-            </div>
-          </div>
+      <Section title="Informations patrimoniales">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Date d'acquisition">
+            <input name="purchase_date" type="date" defaultValue={p?.purchase_date ?? ''} style={inp} />
+          </Field>
+          <Field label="Prix d'achat (€)">
+            <input name="purchase_price" type="number" min="0" defaultValue={p?.purchase_price ?? ''} placeholder="150 000" style={inp} />
+          </Field>
         </div>
-      </section>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+          <Field label="Frais de notaire (€)">
+            <input name="notary_fees" type="number" min="0" defaultValue={p?.notary_fees ?? ''} placeholder="10 000" style={inp} />
+          </Field>
+          <Field label="Frais d'agence (€)">
+            <input name="agency_fees" type="number" min="0" defaultValue={p?.agency_fees ?? ''} placeholder="5 000" style={inp} />
+          </Field>
+          <Field label="Travaux initiaux (€)">
+            <input name="initial_works_cost" type="number" min="0" defaultValue={p?.initial_works_cost ?? ''} placeholder="15 000" style={inp} />
+          </Field>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Valeur estimée actuelle (€)">
+            <input name="estimated_value" type="number" min="0" defaultValue={p?.estimated_value ?? ''} placeholder="180 000" style={inp} />
+          </Field>
+          <Field label="Taxe foncière annuelle (€)">
+            <input name="property_tax" type="number" min="0" defaultValue={p?.property_tax ?? ''} placeholder="800" style={inp} />
+          </Field>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Charges copropriété / mois (€)">
+            <input name="condo_charges" type="number" min="0" defaultValue={p?.condo_charges ?? ''} placeholder="120" style={inp} />
+          </Field>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Régime fiscal">
+            <select name="tax_regime" defaultValue={p?.tax_regime ?? 'micro_foncier'} style={inp}>
+              {TAX_REGIMES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </Field>
+          <Field label="Mode de détention">
+            <select name="ownership_type" defaultValue={p?.ownership_type ?? 'nom_propre'} style={inp}>
+              {OWNERSHIP_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </Field>
+        </div>
+      </Section>
 
       {/* Notes */}
-      <section>
-        <h2 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Notes</h2>
+      <Section title="Notes">
         <textarea
           name="notes"
           defaultValue={p?.notes ?? ''}
           rows={4}
           placeholder="Notes internes sur ce bien..."
-          className={`${inputCls} resize-none`}
+          style={{ ...inp, resize: 'none' as const }}
         />
-      </section>
+      </Section>
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-2">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 4 }}>
         <button
           type="submit"
           disabled={pending}
-          className="bg-[#C9A84C] hover:bg-[#b8963e] disabled:opacity-50 text-[#0a0a0f] font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors"
+          style={{
+            background: pending ? 'rgba(196,168,107,0.5)' : 'linear-gradient(180deg, var(--champagne-3) 0%, var(--champagne) 50%, var(--champagne-2) 100%)',
+            color: 'var(--navy)',
+            border: '1px solid var(--champagne-2)',
+            boxShadow: pending ? 'none' : 'var(--shadow-cta)',
+            fontWeight: 600,
+            fontSize: 13.5,
+            padding: '10px 22px',
+            borderRadius: 'var(--r-md)',
+            cursor: pending ? 'not-allowed' : 'pointer',
+            fontFamily: 'inherit',
+            transition: 'all 0.18s ease',
+          }}
         >
           {pending ? 'Enregistrement...' : p ? 'Enregistrer les modifications' : 'Créer le bien'}
         </button>
-        <a href={p ? `/properties/${p.id}` : '/properties'} className="text-sm text-gray-500 hover:text-white transition-colors">
+        <a
+          href={p ? `/properties/${p.id}` : '/properties'}
+          style={{ fontSize: 13.5, color: 'var(--ink-3)', textDecoration: 'none', transition: 'color 0.18s ease' }}
+        >
           Annuler
         </a>
       </div>
@@ -305,4 +216,38 @@ export default function PropertyForm({ property }: PropertyFormProps) {
   )
 }
 
-const inputCls = 'w-full bg-[#1a1a2e] border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-[#C9A84C]/50 transition-colors'
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: 'var(--ink-3)', fontWeight: 600, paddingBottom: 4, borderBottom: '1px solid var(--bd-light-2)' }}>
+        {title}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <label style={{ fontSize: 12.5, color: 'var(--ink-3)', fontWeight: 500 }}>
+        {label}{required && <span style={{ color: 'var(--danger)', marginLeft: 3 }}>*</span>}
+      </label>
+      {children}
+    </div>
+  )
+}
+
+const inp: React.CSSProperties = {
+  width: '100%',
+  background: 'var(--white)',
+  border: '1px solid var(--bd-light)',
+  borderRadius: 8,
+  padding: '9px 12px',
+  color: 'var(--ink)',
+  fontSize: 13.5,
+  fontFamily: 'inherit',
+  outline: 'none',
+  boxSizing: 'border-box',
+  transition: 'border-color 0.18s ease',
+}
