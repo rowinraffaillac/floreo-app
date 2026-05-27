@@ -51,6 +51,10 @@ export async function createProperty(_prevState: unknown, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  // Upsert profile + subscription in case the auth trigger didn't fire at signup
+  await supabase.from('profiles').upsert({ id: user.id }, { onConflict: 'id', ignoreDuplicates: true })
+  await supabase.from('subscriptions').upsert({ user_id: user.id }, { onConflict: 'user_id', ignoreDuplicates: true })
+
   const name = parseStr(formData.get('name'))
   const address = parseStr(formData.get('address'))
   const city = parseStr(formData.get('city'))
