@@ -59,6 +59,60 @@ export async function getActiveLease(propertyId: string): Promise<{
   return { lease, tenant }
 }
 
+export async function getActiveLeases(
+  propertyIds: string[]
+): Promise<Record<string, { lease: Lease; tenant: Tenant | null }>> {
+  if (propertyIds.length === 0) return {}
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const { data: leases } = await supabase
+    .from('leases')
+    .select('*')
+    .in('property_id', propertyIds)
+    .eq('status', 'actif')
+    .order('start_date', { ascending: false })
+
+  if (!leases || leases.length === 0) return {}
+
+  const leaseMap: Record<string, Lease> = {}
+  for (const lease of leases as Lease[]) {
+    if (!leaseMap[lease.property_id]) leaseMap[lease.property_id] = lease
+  }
+
+  const leaseIds = Object.values(leaseMap).map(l => l.id)
+  const { data: lts } = await supabase
+    .from('lease_tenants')
+    .select('lease_id, tenant_id')
+    .in('lease_id', leaseIds)
+    .eq('is_primary', true)
+
+  if (!lts || lts.length === 0) {
+    return Object.fromEntries(
+      Object.entries(leaseMap).map(([pid, lease]) => [pid, { lease, tenant: null }])
+    )
+  }
+
+  const tenantIds = lts.map(lt => lt.tenant_id)
+  const { data: tenants } = await supabase
+    .from('tenants')
+    .select('*')
+    .in('id', tenantIds)
+
+  const tenantById: Record<string, Tenant> = {}
+  for (const t of (tenants ?? []) as Tenant[]) tenantById[t.id] = t
+  const ltByLeaseId: Record<string, string> = {}
+  for (const lt of lts) ltByLeaseId[lt.lease_id] = lt.tenant_id
+
+  const result: Record<string, { lease: Lease; tenant: Tenant | null }> = {}
+  for (const [propertyId, lease] of Object.entries(leaseMap)) {
+    const tenantId = ltByLeaseId[lease.id]
+    result[propertyId] = { lease, tenant: tenantId ? (tenantById[tenantId] ?? null) : null }
+  }
+  return result
+}
+
 export async function getTenant(id: string): Promise<Tenant> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
